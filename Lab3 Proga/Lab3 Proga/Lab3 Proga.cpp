@@ -7,16 +7,6 @@
 using namespace std;
 #define SIZE 2000
 
-
-//int main()
-//{
-//	string s;
-//	//cin >> s;
-//	s = "d:\\Matrix.txt";
-//    //cout << "Hello World!\n";
-//	Task a;
-//	a.readM(s);
-//}
 class Queue
 {
 private:
@@ -136,13 +126,12 @@ string Task::readM(string s)
 	return p;
 }
 
-//void Task::Algorithm(string p)
-//{
-//
-//}
-
 int main()
 {
+	string fff;
+	cin >> fff;
+	int mm[fff.size()][fff.size()];
+
 	string s;
 	/*cin >> s;
 	s += ".txt";*/
