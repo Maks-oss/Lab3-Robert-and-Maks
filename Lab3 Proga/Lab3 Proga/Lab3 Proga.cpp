@@ -128,17 +128,80 @@ string Task::readM(string s)
 
 int main()
 {
-	string fff;
-	cin >> fff;
-	int mm[fff.size()][fff.size()];
+	string fff="";
+	ifstream file("input.txt");
+	int k = 0;
+	getline(file, fff);
+	int kk = fff.size()/2+1;
+	while (fff!="maxloh")
+	{
+		fff = "maxloh";
+		getline(file, fff);
+		k++;
+	}
+	int **mm = new int *[k];
+	for(int i=0; i<k; i++) mm[i] = new int [kk];
+	file.close();
+	file.open("input.txt");
 
-	string s;
+	int ss=0;
+	for (int i = 0; i < k; i++)
+	{
+		getline(file, fff);
+		for (int j = 0; j < kk*2-1; j+=2)
+		{
+			if (fff[j] == ' ' && fff[j + 1] == ' ') { ss++; mm[i][j / 2] = ss; }
+			else mm[i][j / 2] = 0;
+		}
+	}
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			cout << " \t" << mm[i][j];
+		}
+		cout << "\n";
+	}
+
+	int** ms = new int* [ss+1];
+	for (int i = 0; i < ss+1; i++) ms[i] = new int[ss+1];
+
+	for (int i = 1; i < ss; i++)
+	{
+		for (int j = 1; j < ss; j++)
+		{
+			ms[i][j] = 0;
+		}
+	}
+
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] >= 1)
+			{
+				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]][mm[i][j]]=1; ms[mm[i][j]][mm[i - 1][j]]=1; }
+				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j-1]][mm[i][j]]=1; ms[mm[i][j]][mm[i][j-1]]=1; }
+				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]][mm[i][j]]=1; ms[mm[i][j]][mm[i + 1][j]]=1; }
+				if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j+1]][mm[i][j]]=1; ms[mm[i][j]][mm[i][j+1]]=1; }
+			}
+		}
+	}
+
+	for (int i = 1; i < ss; i++)
+	{
+		cout << "\n";
+		for (int j = 1; j < ss; j++)
+		{
+			cout << ms[i][j] << " ";
+		}
+	}
+	//or(int i=1; i<)
+	//string s;
 	/*cin >> s;
 	s += ".txt";*/
-	s = "Matrix.txt";
-	Task a;
-	string y=a.readM(s);
-	Queue b(200);
-	
-	
+	//s = "Matrix.txt";
+	//Task a;
+	//string y=a.readM(s);
+	//Queue b(200);
 }
