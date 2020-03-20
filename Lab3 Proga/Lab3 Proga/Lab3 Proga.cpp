@@ -1,130 +1,12 @@
 ﻿#include<fstream>
 #include <iostream>
 #include<string>
-#include<vector>
-#include<sstream>
-#include<algorithm>
+
 using namespace std;
-#define SIZE 2000
 
-class Queue
-{
-private:
-	int* arr; //elements in queue
-	int capacity; //max elements 
-	int first;
-	int last;
-	int current;	//current size
-public:
-	Queue(int size=SIZE);
-	~Queue();
-	void push_back(int v);
-	void pop();
-	int front();
-	int back();
-	bool empty();
-	int size();
-	bool full();
-
-};
-Queue::Queue(int size)
-{
-	arr = new int[size];
-	capacity = size;
-	first = 0;
-	current = 0;
-	last =-1;
-
-}
-Queue::~Queue()
-{
-	delete arr;
-}
-void Queue::push_back(int v)
-{
-	
-	if (full())
-	{
-		exit(EXIT_FAILURE);
-	}
-	last++;
-	arr[last] = v;
-	
-	current++;
-}
-int Queue::front()
-{
-	if (empty())
-	{
-		exit(EXIT_FAILURE);
-	}
-	return arr[first];
-}
-int Queue::back()
-{
-	if (empty())
-	{
-		exit(EXIT_FAILURE);
-	}
-	return arr[last];
-}
-bool Queue::empty()
-{
-	
-	return size()==0;
-}
-void Queue::pop()
-{
-	for (int i = 0; i < capacity; i++)
-	{
-		arr[i] = arr[i + 1];
-	}
-	current--;
-}
-int Queue::size()
-{
-	return current;
-}
-bool Queue::full()
-{
-	return size()==capacity;
-}
-
-class Task
-{
-public:
-	string readM(string s);
-	//void Algorithm(string p);
-};
-
-string Task::readM(string s)
-{
-	ifstream file;
-	file.open(s);
-	char o;
-	int count = 0, count1 = 0;
-	string p;
-	
-	while (file.get(o))
-	{
-		if (o == 'X')
-		{
-			count++;
-		}
-		if (o == ' ')
-		{
-			count1++;
-		}
-		p.push_back(o);
-		
-	}
-	cout << p << endl;
-	cout <<"Number of X: "<< count << endl;
-	cout <<"Number of SPACES: "<< count1 << endl;
-	
-	file.close();
-	return p;
-}
+void sss(int** mm, int ss, int V, bool* bb, int& nn, int* ll);
+void delbtw(int* ll, int& nn, int ii, int jj);
+void cccc(int kkk);
 
 int main()
 {
@@ -163,12 +45,12 @@ int main()
 		cout << "\n";
 	}
 
-	int** ms = new int* [ss+1];
-	for (int i = 0; i < ss+1; i++) ms[i] = new int[ss+1];
+	int** ms = new int* [ss];
+	for (int i = 0; i < ss; i++) ms[i] = new int[ss];
 
-	for (int i = 1; i < ss; i++)
+	for (int i = 0; i < ss; i++)
 	{
-		for (int j = 1; j < ss; j++)
+		for (int j = 0; j < ss; j++)
 		{
 			ms[i][j] = 0;
 		}
@@ -180,28 +62,114 @@ int main()
 		{
 			if (mm[i][j] >= 1)
 			{
-				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]][mm[i][j]]=1; ms[mm[i][j]][mm[i - 1][j]]=1; }
-				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j-1]][mm[i][j]]=1; ms[mm[i][j]][mm[i][j-1]]=1; }
-				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]][mm[i][j]]=1; ms[mm[i][j]][mm[i + 1][j]]=1; }
-				if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j+1]][mm[i][j]]=1; ms[mm[i][j]][mm[i][j+1]]=1; }
+				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]-1][mm[i][j] - 1]=1; ms[mm[i][j] - 1][mm[i - 1][j] - 1]=1; }
+				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j-1] - 1][mm[i][j] - 1]=1; ms[mm[i][j] - 1][mm[i][j-1] - 1]=1; }
+				if (i + 1 < k)  if (mm[i + 1][j] >= 1) { ms[mm[i+1][j] - 1][mm[i][j] - 1]=1; ms[mm[i][j] - 1][mm[i + 1][j] - 1]=1; }
+				if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j+1] - 1][mm[i][j] - 1]=1; ms[mm[i][j] - 1][mm[i][j+1] - 1]=1; }
 			}
 		}
 	}
 
-	for (int i = 1; i < ss; i++)
+	for (int i = 0; i < ss; i++)
 	{
 		cout << "\n";
-		for (int j = 1; j < ss; j++)
+		for (int j = 0; j < ss; j++)
 		{
 			cout << ms[i][j] << " ";
 		}
 	}
-	//or(int i=1; i<)
-	//string s;
-	/*cin >> s;
-	s += ".txt";*/
-	//s = "Matrix.txt";
-	//Task a;
-	//string y=a.readM(s);
-	//Queue b(200);
+
+	int V;
+	cout << "\n\n Print First: ";
+	cin >> V;
+	V--;
+
+	bool* bb = new bool[ss];
+	for (int i = 0; i < ss; i++) bb[i] = false;
+
+	int* ll = new int[ss];
+	int nn = 0;
+	/*
+	for (int i = 0; i < ss; i++)
+	{
+		if (bb[i] == false) sss(ms, ss, i, bb, nn, ll);
+	}
+	*/
+	sss(ms, ss, V, bb, nn, ll);
+
+	cout << " ---\n Result " << nn << ": ";
+	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i]+1 << ")";
+	cout << "\n ---";
+
+	for (int i = 0 ; i < nn-2; i++)
+	{
+		for (int j = i+2; j < nn; j++)
+		{
+			if (ms[ll[j]][ll[i]] == 1)
+			{
+				delbtw(ll, nn, i + 1, j);
+			}
+		}
+	}
+	bool is = false;
+
+	for (int i = 0; i < k; i++)
+	{
+		cout << "\n";
+		for (int j = 0; j < kk; j++)
+		{
+			//Переробить
+			is = false;
+			for (int jk = nn - 1; jk >= 0; jk--) if (mm[i][j] == ll[jk] + 1) { is = true; cccc(nn-jk-1); break; }
+			if (is == false)
+			{
+				if (mm[i][j] == 0) cout << "X ";
+				else cout << "  ";
+			}
+		}
+	}
+
+	cout << "\n ---\n Result " << nn << ": ";
+	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i]+1 << ")";
+	cout << "\n ---";
+	return 0;
+}
+
+void cccc(int kkk)
+{
+	/// Переробить
+	switch (kkk)
+	{
+	case 0: cout << "  "; break; 
+	case 10: cout << "a "; break;
+	case 11: cout << "b "; break;
+	case 12: cout << "c "; break;
+	case 13: cout << "d "; break;
+	case 14: cout << "e "; break;
+	case 15: cout << "f "; break;
+	default: cout << kkk << " ";
+	}
+}
+void delbtw(int* ll, int &nn, int ii, int jj)
+{
+	for (int i = ii; i < nn - (jj - ii); i++)
+	{
+		//cout << i << " " << ll[i] + 1 << "\n";
+		ll[i] = ll[i+(jj-ii)];
+	}
+	//cout << jj - ii << "\n";
+	nn -= (jj - ii);
+}
+void sss(int** ms, int ss, int V, bool* bb, int& nn, int* ll)
+{
+	bb[V] = 1;
+	for (int i = 0; i < ss; i++)
+	{
+		if (ms[V][i] == 1 && bb[i] == 0)
+		{
+			sss(ms, ss, i, bb, nn, ll);
+		}
+	}
+	ll[nn] = V;
+	nn++;
 }
