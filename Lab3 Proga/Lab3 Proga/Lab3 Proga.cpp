@@ -72,7 +72,7 @@ int main()
 
 	for (int i = 0; i < ss; i++)
 	{
-		cout << "\n";
+		cout << "\n ";
 		for (int j = 0; j < ss; j++)
 		{
 			cout << ms[i][j] << " ";
@@ -89,12 +89,7 @@ int main()
 
 	int* ll = new int[ss];
 	int nn = 0;
-	/*
-	for (int i = 0; i < ss; i++)
-	{
-		if (bb[i] == false) sss(ms, ss, i, bb, nn, ll);
-	}
-	*/
+
 	sss(ms, ss, V, bb, nn, ll);
 
 	cout << " ---\n Result " << nn << ": ";
@@ -111,11 +106,15 @@ int main()
 			}
 		}
 	}
-	bool is = false;
 
+	cout << "\n ---\n Result " << nn << ": ";
+	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i] + 1 << ")";
+	cout << "\n ---";
+
+	bool is = false;
 	for (int i = 0; i < k; i++)
 	{
-		cout << "\n";
+		cout << "\n ";
 		for (int j = 0; j < kk; j++)
 		{
 			//Переробить
@@ -128,10 +127,6 @@ int main()
 			}
 		}
 	}
-
-	cout << "\n ---\n Result " << nn << ": ";
-	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i]+1 << ")";
-	cout << "\n ---";
 	return 0;
 }
 
