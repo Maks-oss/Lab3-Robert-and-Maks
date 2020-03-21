@@ -1,24 +1,21 @@
 ﻿#include<fstream>
 #include <iostream>
 #include<string>
-#include<vector>
-#include<sstream>
-#include<algorithm>
+
 using namespace std;
 #define SIZE 2000
 
-class Queue
+class priorityQueue
 {
 private:
 	int* arr; //elements in queue
 	int capacity; //max elements 
-	int first;
-	int last;
-	int current;	//current size
+	int current; //current size
+	
 public:
-	Queue(int size=SIZE);
-	~Queue();
-	void push_back(int v);
+	priorityQueue(int size=SIZE);
+	~priorityQueue();
+	void push_back(int v,int p);
 	void pop();
 	int front();
 	int back();
@@ -27,65 +24,54 @@ public:
 	bool full();
 
 };
-Queue::Queue(int size)
+priorityQueue::priorityQueue(int size)
 {
-	arr = new int[size];
-	capacity = size;
-	first = 0;
+	arr = new int[size+1];
+	capacity = size+1;
 	current = 0;
-	last =-1;
 
 }
-Queue::~Queue()
+priorityQueue::~priorityQueue()
 {
 	delete arr;
 }
-void Queue::push_back(int v)
+void priorityQueue::push_back(int v,int p)
 {
 	
 	if (full())
 	{
 		exit(EXIT_FAILURE);
 	}
-	last++;
-	arr[last] = v;
-	
+	arr[p] = v;
 	current++;
 }
-int Queue::front()
+int priorityQueue::front()
 {
 	if (empty())
 	{
 		exit(EXIT_FAILURE);
 	}
-	return arr[first];
+	return arr[1];
 }
-int Queue::back()
-{
-	if (empty())
-	{
-		exit(EXIT_FAILURE);
-	}
-	return arr[last];
-}
-bool Queue::empty()
+
+bool priorityQueue::empty()
 {
 	
 	return size()==0;
 }
-void Queue::pop()
+void priorityQueue::pop()
 {
-	for (int i = 0; i < capacity; i++)
+	for (int i = 1; i < capacity; i++)
 	{
 		arr[i] = arr[i + 1];
 	}
 	current--;
 }
-int Queue::size()
+int priorityQueue::size()
 {
 	return current;
 }
-bool Queue::full()
+bool priorityQueue::full()
 {
 	return size()==capacity;
 }
@@ -129,7 +115,11 @@ string Task::readM(string s)
 int main()
 {
 	string fff="";
-	ifstream file("input.txt");
+	ifstream file("d:\\input.txt");
+	if (!file.is_open())
+	{
+		cout << "Nope";
+	}
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size()/2+1;
@@ -142,7 +132,7 @@ int main()
 	int **mm = new int *[k];
 	for(int i=0; i<k; i++) mm[i] = new int [kk];
 	file.close();
-	file.open("input.txt");
+	file.open("d:\\input.txt");
 
 	int ss=0;
 	for (int i = 0; i < k; i++)
@@ -158,7 +148,7 @@ int main()
 	{
 		for (int j = 0; j < kk; j++)
 		{
-			cout << " \t" << mm[i][j];
+			cout << "  " << mm[i][j];
 		}
 		cout << "\n";
 	}
@@ -196,12 +186,6 @@ int main()
 			cout << ms[i][j] << " ";
 		}
 	}
-	//or(int i=1; i<)
-	//string s;
-	/*cin >> s;
-	s += ".txt";*/
-	//s = "Matrix.txt";
-	//Task a;
-	//string y=a.readM(s);
-	//Queue b(200);
+	
+
 }
