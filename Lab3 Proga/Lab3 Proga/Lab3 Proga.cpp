@@ -1,13 +1,12 @@
-﻿#include<fstream>
+﻿#include <fstream>
 #include <iostream>
-#include<string>
+#include <string>
 
 using namespace std;
 
 void sss(int** mm, int ss, int V, bool* bb, int& nn, int* ll);
 void delbtw(int* ll, int& nn, int ii, int jj);
 void cccc(int kkk);
-
 void df(int* ll, int& s, int kn);
 
 int main()
@@ -42,7 +41,7 @@ int main()
 	{
 		for (int j = 0; j < kk; j++)
 		{
-			if(mm[i][j]==0) cout << " \t  ";
+			if(mm[i][j]==0) cout << " \t---";
 			else cout << " \t(" << mm[i][j] << ")";
 		}
 		cout << "\n";
@@ -78,18 +77,20 @@ int main()
 		cout << "\n\t";
 		for (int j = 0; j < ss; j++)
 		{
-			cout << ms[i][j] << " ";
+			cout << ms[i][j] << "";
 		}
 	}
 
 	int V;
-	cout << "\n\n Print First: ";
+	cout << "\n\n Print Start: ";
 	cin >> V;
+	if (V > ss || V <=0) { cout << " [!] Wrong number [!]"; return 1; }
 	V--;
 
 	int Vl;
-	cout << "\n\n Print First: ";
+	cout << " Print Finish: ";
 	cin >> Vl;
+	if (Vl > ss || Vl <= 0) { cout << " [!] Wrong number [!]"; return 1; }
 	Vl--;
 
 	bool* bb = new bool[ss];
@@ -100,15 +101,13 @@ int main()
 
 	sss(ms, ss, V, bb, nn, ll);
 
-	cout << " ---\n 1 Result " << nn << ": ";
+	cout << " ------------------------------------------------------\n | 1 - Result " << nn << ": ";
 	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i] + 1 << ")";
-	cout << "\n ---";
 
 	for (int i = nn - 1; i >= 0; i--) if (ll[i] == Vl) { df(ll, nn, i); break; }
 
-	cout << "\n ---\n 2 Result " << nn << ": ";
+	cout << "\n ------------------------------------------------------\n | 2 - Result " << nn << ": ";
 	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i] + 1 << ")";
-	cout << "\n ---";
 
 	for (int i = 0; i < nn - 2; i++)
 	{
@@ -121,17 +120,24 @@ int main()
 		}
 	}
 
-	cout << "\n ---\n 3 Result " << nn << ": ";
+	cout << "\n ------------------------------------------------------\n | 3 - Result " << nn << ": ";
 	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i] + 1 << ")";
-	cout << "\n ---";
+	cout << "\n ------------------------------------------------------";
+
+	if (ll[0] != Vl) { cout << "\n No way..................................... [!!!]"; return 1;  }
 
 	bool is = false;
+	cout << "\n -";
+	for (int i = 0; i < k+1; i++)
+	{
+		cout << "--";
+	}
 	for (int i = 0; i < k; i++)
 	{
-		cout << "\n ";
+		cout << "\n | ";
 		for (int j = 0; j < kk; j++)
 		{
-			//Переробить
+			//Переробить мб
 			is = false;
 			for (int jk = nn - 1; jk >= 0; jk--) if (mm[i][j] == ll[jk] + 1) { is = true; cccc(nn - jk - 1); break; }
 			if (is == false)
@@ -140,6 +146,12 @@ int main()
 				else cout << "  ";
 			}
 		}
+		cout << "|";
+	}
+	cout << "\n -";
+	for (int i = 0; i < k + 1; i++)
+	{
+		cout << "--";
 	}
 	return 0;
 }
@@ -154,6 +166,9 @@ void df(int* ll, int& s, int kn)
 }
 void cccc(int kkk)
 {
+	if (kkk == 0) cout << "S ";
+	else cout << std::hex << kkk << " ";
+	/*
 	switch (kkk)
 	{
 	case 0: cout << "S "; break;
@@ -165,6 +180,7 @@ void cccc(int kkk)
 	case 15: cout << "f "; break;
 	default: cout << kkk << " ";
 	}
+	*/
 }
 void delbtw(int* ll, int& nn, int ii, int jj)
 {
