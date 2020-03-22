@@ -68,7 +68,7 @@ int main()
 	bool* bb = new bool[ss];
 	for (int i = 0; i < ss; i++) bb[i] = false;
 
-	int* ll = new int[ss];
+	int* ll = new int[ss*8];
 	int nn = 0;
 
 	sss(ms, ss, V, bb, nn, ll);
