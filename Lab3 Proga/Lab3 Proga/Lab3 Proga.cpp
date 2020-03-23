@@ -41,8 +41,6 @@ int main()
 			else mm[i][j / 2] = 0;
 		}
 	}
-
-
 	file.close();
 
 	cout << " Our Labyrinth and Vertices:\n";
@@ -113,10 +111,7 @@ void sumig(int** ms, int** mm, int ss, int k, int kk)
 	//for (int i = 0; i < ss; i++)
 	//{
 	//	cout << "\n\t";
-	//	for (int j = 0; j < ss; j++)
-	//	{
-	//		cout << ms[i][j] << "";
-	//	}
+	//	for (int j = 0; j < ss; j++) cout << ms[i][j] << "";
 	//}
 }
 void shrink(int** ms, int* ll, int& nn, int Vl)
@@ -145,10 +140,13 @@ void shrink(int** ms, int* ll, int& nn, int Vl)
 	cout << "\n ----\n | 3 - Result " << nn << ": ";
 	for (int i = nn - 1; i >= 0; i--) cout << "(" << ll[i] + 1 << ")";
 	cout << "\n ----\n";
-
 }
 char symb(int N)
 {
+	while (N > 60)
+	{
+		N -= 60;
+	}
 	if (N == 0) return '!';//start
 	else if (N < 10) return N + 48;
 	else if (N + 87 <= 122) return N + 87;
