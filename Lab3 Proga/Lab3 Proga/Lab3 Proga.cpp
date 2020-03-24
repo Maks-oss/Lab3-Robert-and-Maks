@@ -12,6 +12,7 @@ void shrink(int** ms, int* ll, int& nn, int Vl);
 void sumig(int** ms, int** mm, int ss, int k, int kk);
 void way(int** mm, int* ll, int nn, int k, int kk);
 char symb(int N);
+void lbshow(int** mm, int k, int kk);
 
 int main()
 {
@@ -30,7 +31,6 @@ int main()
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
 	file.open("input.txt");
-
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -43,23 +43,13 @@ int main()
 	}
 	file.close();
 
-	cout << " Our Labyrinth and Vertices:\n";
-	for (int i = 0; i < k; i++)
-	{
-		if (i == 0) { for (int jj = 0; jj < kk; jj++) cout << "\t---"; cout << "\n"; }
-		for (int j = 0; j < kk; j++)
-		{
-			if(mm[i][j]==0) cout << "\t | ";
-			else cout << "\t(" << mm[i][j] << ")";
-		}
-		cout << "\n";
-		if (i == k - 1) for (int jj = 0; jj < kk; jj++) cout << "\t---";
-	}
+	lbshow(mm, k, kk);
 
 	int** ms = new int* [ss];
 	for (int i = 0; i < ss; i++) ms[i] = new int[ss];
 
 	sumig(ms, mm, ss, k, kk);
+
 	int V;
 	cout << "\n Print *Start* vertex: ";
 	cin >> V;
@@ -77,15 +67,28 @@ int main()
 
 	int* ll = new int[ss*ss];
 	int nn = 0;
-
 	sss(ms, ss, V, bb, nn, ll);
-
 	shrink(ms, ll, nn, Vl);
 	if (ll[0] != Vl) { cout << "\n No way..................................... [!!!]"; return 1;  }
 	outr(mm, ll, k, kk, nn);
 	return 0;
 }
 
+void lbshow(int** mm, int k, int kk)
+{
+	cout << " Our Labyrinth and Vertices:\n";
+	for (int i = 0; i < k; i++)
+	{
+		if (i == 0) { for (int jj = 0; jj < kk; jj++) cout << "\t---"; cout << "\n"; }
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] == 0) cout << "\t | ";
+			else cout << "\t(" << mm[i][j] << ")";
+		}
+		cout << "\n";
+		if (i == k - 1) for (int jj = 0; jj < kk; jj++) cout << "\t---";
+	}
+}
 void sumig(int** ms, int** mm, int ss, int k, int kk)
 {
 	for (int i = 0; i < ss; i++)
@@ -108,11 +111,6 @@ void sumig(int** ms, int** mm, int ss, int k, int kk)
 			}
 		}
 	}
-	//for (int i = 0; i < ss; i++)
-	//{
-	//	cout << "\n\t";
-	//	for (int j = 0; j < ss; j++) cout << ms[i][j] << "";
-	//}
 }
 void shrink(int** ms, int* ll, int& nn, int Vl)
 {
