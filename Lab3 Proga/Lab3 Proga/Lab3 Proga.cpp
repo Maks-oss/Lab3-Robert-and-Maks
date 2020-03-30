@@ -13,10 +13,6 @@ void Adjance(int** mm, int k, int kk, int** ms);
 void A_star(int ss, int** ms, vector<int>& c, int x, int y, int** mm, int k, int kk);
 void file_out(vector<int>& c, int** mm, int k, int kk);
 
-struct Node
-{
-	int start, end;
-};
 class Queue
 {
 private:
@@ -34,14 +30,15 @@ public:
 	bool empty() { return current == 0; }
 	int size() { return current; }
 	bool getel(int ll);
-}
+	int getMinimumVertex(bool* mst, int* key);
+};
 Queue::Queue(int size)
 {
 	arr = new int[size];
 	capacity = size;
 	current = 0;
-
 }
+
 void Queue::push(int v)
 {
 	int i = current;
@@ -100,6 +97,18 @@ bool Queue::getel(int ll)
 	return false;
 }
 
+int Queue:: getMinimumVertex(bool* mst, int* key) {
+	int minKey = INT_MAX;
+	int vertex = -1;
+	for (int i = 0; i < current; i++) {
+		if (mst[i] == false && minKey > key[i]) {
+			minKey = key[i];
+			vertex = i;
+		}
+	}
+	return vertex;
+}
+
 
 int main()
 {
@@ -112,9 +121,9 @@ int main()
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
-	while (fff != "Robloh")
+	while (fff != "maxloh")
 	{
-		fff = "robloh";
+		fff = "maxloh";
 		getline(file, fff);
 		k++;
 	}
@@ -154,25 +163,6 @@ int main()
 			ms[i][j] = 0;
 		}
 	}
-
-	//for (int i = 0; i < k; i++)
-	//{
-	//	for (int j = 0; j < kk; j++)
-	//	{
-	//		
-	//		if (mm[i][j] >= 1)
-	//		{
-	//			/*ms[21][17] = ms[17][21] = ms[20][19] = ms[19][20] = 1;
-	//			ms[20][17] = ms[17][20] = 0;*/
-	//			if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i - 1][j]] = 1; }
-	//			if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1]][mm[i][j]] = 1; ms[mm[i][j]][mm[i][j - 1]] = 1; }
-	//			if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i + 1][j]] = 1; }
-	//			if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j + 1]][mm[i][j]] = 1; ms[mm[i][j]][mm[i][j + 1]] = 1; }
-	//			
-	//		}
-	//	}
-	//}
-
 	Adjance(mm, k, kk, ms);
 	cout << endl;
 	int x, y;
@@ -180,117 +170,13 @@ int main()
 	cout << "Input coordinate: ";	cin >> x;	
 	cout << endl;
 	cout << "Input end node: ";		cin >> y;	
-	//Queue frontier;
-	//int node = x;
-	//bool* used = new bool[ss];
-	//for (int i = 1; i < ss; i++) { used[i] = false; }
-	//frontier.push(x);
-	//while (!frontier.empty())
-	//{
-	//	if (frontier.empty())
-	//	{
-	//		break;
-	//	}
-	//	node = frontier.deletemin();
-	//	if (node == y)
-	//	{
-	//		cout << "END";
-	//		break;
-	//	}
-	//	used[node] = true;
-	//	for (int i = 1; i < ss; i++)
-	//	{
-	//		int v = ms[node][i];
-	//		if (v == 1 && !used[i])
-	//		{
-	//			frontier.push(i);
-	//			c.push_back(i);
-	//		}
-	//	}
-	//	cout << frontier.getmin() << " ";
-	//}
-	////
-	//for (int i = 0; i < c.size(); i++)
-	//{
-	//	cout << c[i] << " ";
-	//}
-
-	/*Queue openset;
-	Queue closedset;
-	int* g = new int[ss];
-	for (int i = 1; i < ss; i++) { g[i] = INT_MAX; }
-	g[x] = 0;
-	int* f = new int[ss];
-	for (int i = 1; i < ss; i++) { f[i] = 0; }
-	openset.push(x);
-	f[x] = g[x] + h(x, y,mm,k,kk);
-	while (!openset.empty())
-	{
-		int current = openset.getmin();
-			if (current == y)
-			{
-				cout << "END" << endl;
-				c.push_back(y);
-				break;
-			}
-		closedset.push(current);
-		c.push_back(current);
-		openset.deletemin();
-		for (int i = 1; i < ss; i++)
-		{
-			int v = ms[current][i];
-			if (v)
-			{
-				int tempg = g[i] + 1;
-				if (tempg<g[i])
-				{
-					g[i] = tempg;
-					f[i] = g[i] + h(i, y, mm, k, kk);
-					if (!openset.getel(i))
-					{
-						openset.push(i);
-					}
-					
-				}
-			}
-		}
-	}*/
+	
 	A_star(ss, ms, c, x, y, mm, k, kk);
 	cout << endl;
 	file_out(c, mm, k, kk);
-	/*for (int i = 0; i < c.size(); i++)
-	{
-		cout << c[i] << " ";
-	}
 	ofstream fout;
 	fout.open("d:\\output.txt");
-	bool is;
-	for (int i = 0; i < k; i++)
-	{
-		cout << "\n | ";
-		for (int j = 0; j < kk; j++)
-		{
-			is = false;
-			for (int o = 0; o < c.size(); o++)
-			{
-				if (mm[i][j] == c[o])
-				{
-					is = true;
-					
-					cout << symb(o) << ' '; fout << symb(o) << ' ';
-					break;
-				}
-			}
-				if (is == false)
-				{
-					if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
-					else { cout << "  ";	fout << " "; }
-				}
-			
-		}
-		fout << endl;
-		cout << "|";
-	}*/
+	
 	return 0;
 }
 
@@ -303,8 +189,7 @@ void Adjance(int** mm, int k, int kk, int** ms)
 
 			if (mm[i][j] >= 1)
 			{
-				/*ms[21][17] = ms[17][21] = ms[20][19] = ms[19][20] = 1;
-				ms[20][17] = ms[17][20] = 0;*/
+				
 				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i - 1][j]] = 1; }
 				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1]][mm[i][j]] = 1; ms[mm[i][j]][mm[i][j - 1]] = 1; }
 				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i + 1][j]] = 1; }
