@@ -4,6 +4,7 @@
 #include<utility>
 #include<vector>
 #include<cmath>
+#include<iomanip>
 char symb(int N);
 using namespace std;
 #define SIZE 2000
@@ -104,7 +105,7 @@ bool Queue::getel(int ll)
 int main()
 {
 	string fff = "";
-	ifstream file("d:\\input.txt");
+	ifstream file("d:\\Y.txt");
 	if (!file.is_open())
 	{
 		cout << "Nope";
@@ -121,7 +122,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("d:\\input.txt");
+	file.open("d:\\Y.txt");
 
 	int ss = 0;
 	for (int i = 0; i < k; i++)
@@ -133,11 +134,12 @@ int main()
 			else mm[i][j / 2] = 0;
 		}
 	}
+	cout << "Labyrinth nodes: " << endl;
 	for (int i = 0; i < k; i++)
 	{
 		for (int j = 0; j < kk; j++)
 		{
-			cout << "  " << mm[i][j];
+			cout << setw(6) << mm[i][j]<<setw(6);
 		}
 		cout << "\n";
 	}
@@ -180,7 +182,6 @@ void Adjance(int** mm, int k, int kk, int** ms)
 
 			if (mm[i][j] >= 1)
 			{
-				
 				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i - 1][j]] = 1; }
 				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1]][mm[i][j]] = 1; ms[mm[i][j]][mm[i][j - 1]] = 1; }
 				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i + 1][j]] = 1; }
@@ -189,17 +190,6 @@ void Adjance(int** mm, int k, int kk, int** ms)
 			}
 		}
 	}
-
-
-	/*for (int i = 1; i < 22; i++)
-	{
-		for (int j = 1; j < 22; j++)
-		{
-			cout << ms[i][j] << "  ";
-		}
-		cout << endl;
-	}*/
-
 
 }
 
@@ -240,14 +230,14 @@ int h(int x,int y,int**ms,int k,int kk)
 void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 {
 	Queue openset;
-	bool* used = new bool[ss+1];
-	int* prev = new int[ss+1];
+	bool* used = new bool[ss];
+	int* prev = new int[ss];
 	for (int i = 1; i < ss+1; i++) { used[i] = false; prev[i] = 0; }
-	int* g = new int[ss+1];
+	int* g = new int[ss];
 	for (int i = 1; i < ss+1; i++) { g[i] = INT_MAX; }
 	g[x] = 0;
 	prev[x] = 0;
-	int* f = new int[ss+1];
+	int* f = new int[ss];
 	for (int i = 1; i < ss+1; i++) { f[i] = 0; }
 	f[x] = g[x] + h(x, y, mm, k, kk);
 	openset.push(x);
@@ -265,7 +255,7 @@ void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 		for (int i = 1; i < ss+1; i++)
 		{
 			int v = ms[current][i];
-			if (v)
+			if (v==1)
 			{
 				int tempg = g[current] + 1;
 				if (tempg < g[i])
@@ -287,6 +277,7 @@ void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 		c.push_back(v);
 	c.push_back(x);
 	reverse(c.begin(), c.end());
+	cout << endl;
 }
 
 void file_out(vector<int>& c, int** mm, int k, int kk)
