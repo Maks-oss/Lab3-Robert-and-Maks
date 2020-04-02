@@ -30,7 +30,7 @@ public:
 	bool empty() { return current == 0; }
 	int size() { return current; }
 	bool getel(int ll);
-	int getMinimumVertex(bool* mst, int* key);
+	
 };
 Queue::Queue(int size)
 {
@@ -97,17 +97,8 @@ bool Queue::getel(int ll)
 	return false;
 }
 
-int Queue:: getMinimumVertex(bool* mst, int* key) {
-	int minKey = INT_MAX;
-	int vertex = -1;
-	for (int i = 0; i < current; i++) {
-		if (mst[i] == false && minKey > key[i]) {
-			minKey = key[i];
-			vertex = i;
-		}
-	}
-	return vertex;
-}
+
+
 
 
 int main()
@@ -198,6 +189,18 @@ void Adjance(int** mm, int k, int kk, int** ms)
 			}
 		}
 	}
+
+
+	/*for (int i = 1; i < 22; i++)
+	{
+		for (int j = 1; j < 22; j++)
+		{
+			cout << ms[i][j] << "  ";
+		}
+		cout << endl;
+	}*/
+
+
 }
 
 char symb(int N)
@@ -238,35 +241,36 @@ void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 {
 	Queue openset;
 	bool* used = new bool[ss+1];
-	for (int i = 1; i < ss; i++) { used[i] = false; }
-
+	int* prev = new int[ss+1];
+	for (int i = 1; i < ss+1; i++) { used[i] = false; prev[i] = 0; }
 	int* g = new int[ss+1];
-	for (int i = 1; i < ss; i++) { g[i] = INT_MAX; }
+	for (int i = 1; i < ss+1; i++) { g[i] = INT_MAX; }
 	g[x] = 0;
+	prev[x] = 0;
 	int* f = new int[ss+1];
-	for (int i = 1; i < ss; i++) { f[i] = 0; }
-	openset.push(x);
+	for (int i = 1; i < ss+1; i++) { f[i] = 0; }
 	f[x] = g[x] + h(x, y, mm, k, kk);
+	openset.push(x);
 	while (!openset.empty())
 	{
 		int current = openset.getmin();
 		if (current == y)
 		{
 			cout << "END" << endl;
-			c.push_back(y);
+			
 			break;
 		}
 		used[current]=true;
-		c.push_back(current);
 		openset.deletemin();
-		for (int i = 1; i < ss; i++)
+		for (int i = 1; i < ss+1; i++)
 		{
 			int v = ms[current][i];
 			if (v)
 			{
-				int tempg = g[i] + 1;
+				int tempg = g[current] + 1;
 				if (tempg < g[i])
 				{
+					prev[i] = current;
 					g[i] = tempg;
 					f[i] = g[i] + h(i, y, mm, k, kk);
 					if (!openset.getel(i))
@@ -278,6 +282,11 @@ void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 			}
 		}
 	}
+
+	for (int v = y; v != x; v = prev[v])
+		c.push_back(v);
+	c.push_back(x);
+	reverse(c.begin(), c.end());
 }
 
 void file_out(vector<int>& c, int** mm, int k, int kk)
@@ -300,6 +309,7 @@ void file_out(vector<int>& c, int** mm, int k, int kk)
 					cout << symb(o) << ' '; fout << symb(o) << ' ';
 					break;
 				}
+				
 			}
 			if (is == false)
 			{
