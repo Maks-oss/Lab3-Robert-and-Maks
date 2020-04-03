@@ -1,10 +1,11 @@
-﻿#include<fstream>
+﻿#include <fstream>
 #include <iostream>
-#include<string>
-#include<utility>
-#include<vector>
-#include<cmath>
-#include<iomanip>
+#include <string>
+//#include <utility>
+#include <vector>
+//#include <cmath>
+#include <iomanip>
+
 char symb(int N);
 using namespace std;
 #define SIZE 2000
@@ -39,7 +40,6 @@ Queue::Queue(int size)
 	capacity = size;
 	current = 0;
 }
-
 void Queue::push(int v)
 {
 	int i = current;
@@ -52,7 +52,6 @@ void Queue::push(int v)
 		i = (i-1)/2;
 	}
 }
-
 void Queue::decrease(int last, int val)
 {
 	arr[last] = val;
@@ -62,7 +61,6 @@ void Queue::decrease(int last, int val)
 		last = (last - 1) / 2;
 	}
 }
-
 void Queue::heapify(int small)
 {
 	int l = (2 * small) + 1;
@@ -75,7 +73,6 @@ void Queue::heapify(int small)
 		heapify(i); 
 	}
 }
-
 int Queue::deletemin()
 {
 	
@@ -85,7 +82,6 @@ int Queue::deletemin()
 	heapify(0);
 	return k;
 }
-
 bool Queue::getel(int ll)
 {
 	for (int i = 0; i < current; i++)
@@ -98,14 +94,10 @@ bool Queue::getel(int ll)
 	return false;
 }
 
-
-
-
-
 int main()
 {
 	string fff = "";
-	ifstream file("d:\\Y.txt");
+	ifstream file("input.txt");
 	if (!file.is_open())
 	{
 		cout << "Nope";
@@ -122,7 +114,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("d:\\Y.txt");
+	file.open("input.txt");
 
 	int ss = 0;
 	for (int i = 0; i < k; i++)
@@ -130,7 +122,7 @@ int main()
 		getline(file, fff);
 		for (int j = 0; j < kk * 2 - 1; j += 2)
 		{
-			if (fff[j] == ' ' && fff[j + 1] == ' ') { ss++; mm[i][j/2] = ss; }
+			if (fff[j] == ' ' && fff[j + 1] == ' ') { ss++; mm[i][j / 2] = ss; }
 			else mm[i][j / 2] = 0;
 		}
 	}
@@ -139,12 +131,10 @@ int main()
 	{
 		for (int j = 0; j < kk; j++)
 		{
-			cout << setw(7) << mm[i][j]<<setw(7);
+			cout << setw(6) << mm[i][j] << setw(6);
 		}
 		cout << "\n";
 	}
-
-	
 
 	int** ms = new int* [ss + 1];
 	for (int i = 0; i < ss + 1; i++) ms[i] = new int[ss + 1];
@@ -160,18 +150,17 @@ int main()
 	cout << endl;
 	int x, y;
 	vector<int>c;
-	cout << "Input coordinate: ";	cin >> x;	
+	cout << "Input coordinate: ";	cin >> x;
+	if (x > ss || x <= 0) { cout << " [!] Wrond number!"; return 1; }
 	cout << endl;
 	cout << "Input end node: ";		cin >> y;	
-	
+	if (y > ss || y <= 0) { cout << " [!] Wrond number!"; return 1; }
+
 	A_star(ss, ms, c, x, y, mm, k, kk);
 	cout << endl;
 	file_out(c, mm, k, kk);
-	
-	
 	return 0;
 }
-
 void Adjance(int** mm, int k, int kk, int** ms)
 {
 	for (int i = 0; i < k; i++)
@@ -185,13 +174,10 @@ void Adjance(int** mm, int k, int kk, int** ms)
 				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1]][mm[i][j]] = 1; ms[mm[i][j]][mm[i][j - 1]] = 1; }
 				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]][mm[i][j]] = 1; ms[mm[i][j]][mm[i + 1][j]] = 1; }
 				if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j + 1]][mm[i][j]] = 1; ms[mm[i][j]][mm[i][j + 1]] = 1; }
-
 			}
 		}
 	}
-
 }
-
 char symb(int N)
 {
 	while (N > 60)
@@ -220,12 +206,10 @@ int h(int x,int y,int**ms,int k,int kk)
 
 		}
 	}
-		int dx = abs(x1 - x2);
-		int dy = abs(y1 - y2);
-		return dx + dy;
-	
+	int dx = abs(x1 - x2);
+	int dy = abs(y1 - y2);
+	return dx + dy;
 }
-
 void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 {
 	Queue openset;
@@ -271,18 +255,24 @@ void A_star(int ss, int** ms, vector<int>& c,int x,int y,int**mm,int k,int kk)
 			}
 		}
 	}
-
+	/*
+	if (x > y)
+	{
+		int hhh = x;
+		x = y;
+		y = hhh;
+	}
+	*/
 	for (int v = y; v != x; v = prev[v])
-		c.push_back(v);
+	c.push_back(v);
 	c.push_back(x);
 	reverse(c.begin(), c.end());
 	cout << endl;
 }
-
 void file_out(vector<int>& c, int** mm, int k, int kk)
 {
 	ofstream fout;
-	fout.open("d:\\output.txt");
+	fout.open("output.txt");
 	bool is;
 	for (int i = 0; i < k; i++)
 	{
@@ -295,21 +285,17 @@ void file_out(vector<int>& c, int** mm, int k, int kk)
 				if (mm[i][j] == c[o])
 				{
 					is = true;
-
 					cout << symb(o) << ' '; fout << symb(o) << ' ';
 					break;
 				}
-				
 			}
 			if (is == false)
 			{
 				if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
-				else { cout << "  ";	fout << " "; }
+				else { cout << "  ";  fout << "  "; }
 			}
-
 		}
 		fout << endl;
 		cout << "|";
 	}
-	fout.close();
 }
