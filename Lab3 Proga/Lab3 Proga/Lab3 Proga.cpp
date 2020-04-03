@@ -131,6 +131,7 @@ int main()
 	{
 		for (int j = 0; j < kk; j++)
 		{
+			cout << setw(7) << mm[i][j]<<setw(7);
 			cout << setw(6) << mm[i][j] << setw(6);
 		}
 		cout << "\n";
@@ -159,6 +160,9 @@ int main()
 	A_star(ss, ms, c, x, y, mm, k, kk);
 	cout << endl;
 	file_out(c, mm, k, kk);
+	ofstream fout;
+	fout.open("d:\\output.txt");
+	
 	return 0;
 }
 void Adjance(int** mm, int k, int kk, int** ms)
@@ -298,4 +302,5 @@ void file_out(vector<int>& c, int** mm, int k, int kk)
 		fout << endl;
 		cout << "|";
 	}
+	fout.close();
 }
