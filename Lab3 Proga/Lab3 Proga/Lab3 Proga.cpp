@@ -33,7 +33,6 @@ int main()
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
 	file.open("input.txt");
-
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -55,10 +54,9 @@ int main()
 	}
 
 	int** ms = new int* [ss];
-	for (int i = 0; i < ss + 1; i++) ms[i] = new int[ss];
-
 	for (int i = 0; i < ss; i++)
 	{
+		ms[i] = new int[ss];
 		for (int j = 0; j < ss; j++) ms[i][j] = INT_MAX;
 	}
 	makems(mm, k, kk, ms);
@@ -69,7 +67,6 @@ int main()
 	cout << endl;
 	cout << " Print finish vertex: ";	cin >> y;	
 	if (y > ss || y <= 0) { cout << " [!] Wrond number!"; return 1; }
-
 	x--;
 	y--;
 	int* d = new int[ss];
@@ -99,7 +96,6 @@ int main()
 	}
 	int* r = new int[ss];
 	int iii = 0;
-
 	//for (int i = 0; i < ss; i++) { cout << d[i] << " " << i+1 << " " << qq[i] << endl; }
 	routeout(qq, ss, x, y, r, iii);
 	cout << "\n";
