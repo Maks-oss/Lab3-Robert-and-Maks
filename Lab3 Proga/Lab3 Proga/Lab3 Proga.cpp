@@ -52,7 +52,6 @@ int main()
 		}
 		cout << "\n";
 	}
-
 	int** ms = new int* [ss];
 	for (int i = 0; i < ss; i++)
 	{
@@ -144,17 +143,37 @@ void makems(int** mm, int k, int kk, int** ms)
 		}
 	}
 }
+//char symb(int N)
+//{
+//	while (N > 60)
+//	{
+//		N -= 61;
+//	}
+//	if (N == 0) return '!';//start
+//	else if (N < 10) return N + 48;
+//	else if (N + 87 <= 122) return N + 87;
+//	else if (N + 29 <= 87) return N + 29; //для - 'X'
+//	else if (N + 30 <= 90) return N + 30;
+//	return '+';
+//}
 char symb(int N)
 {
-	while (N > 60)
+	while (N > 8)
 	{
-		N -= 60;
+		N -= 9;
 	}
-	if (N == 0) return '!';//start
-	else if (N < 10) return N + 48;
-	else if (N + 87 <= 122) return N + 87;
-	else if (N + 29 <= 87) return N + 29; //для - 'X'
-	else if (N + 30 <= 90) return N + 30;
+	switch (N)
+	{
+	case 0: return 'M';
+	case 1: return 'a';
+	case 2: return 'k';
+	case 3: return 's';
+	case 4: return '-';
+	case 5: return 'L';
+	case 6: return 'O';
+	case 7: return 'H';
+	case 8: return '-';
+	}
 	return '+';
 }
 void lout(int** mm, int k, int kk, int* r, int iii)
