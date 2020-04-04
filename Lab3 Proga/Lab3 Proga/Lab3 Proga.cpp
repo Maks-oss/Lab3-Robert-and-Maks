@@ -159,6 +159,7 @@ int main()
 	A_star(ss, ms, c, x, y, mm, k, kk);
 	cout << endl;
 	file_out(c, mm, k, kk);
+	cout << ms[x][y] << ms[y][x];
 	return 0;
 }
 void Adjance(int** mm, int k, int kk, int** ms)
