@@ -9,7 +9,7 @@ char symb(int N);
 void makems(int** mm, int k, int kk, int** ms);
 void lout(int** mm, int k, int kk, int* r, int iii);
 
-int minv(int* d, int n, bool* ll);
+int minv(int* d, int n, bool* ll, int* pri);
 void routeout(int* qq, int ss, int a, int v, int* r, int& iii);
 
 int main()
@@ -75,18 +75,65 @@ int main()
 	int* qq = new int[ss];
 	for (int i = 0; i < ss; i++) qq[i] = 0;
 	int vv = x, vso = 1;
+
+	double* pr = new double[ss];
+	ss = 0;
+	int iend, jend;
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] == y+1)
+			{
+				iend = i;
+				jend = j;
+			}
+		}
+	}
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] >= 1) 
+			{
+				pr[ss] = sqrt(pow(iend - i,2) + pow(jend - j,2));
+				ss++;
+			}
+		}
+	}
+
+	int* pri = new int[ss];
+	int hpr;
+	for (int i = 0; i < ss; i++) pri[i] = i;
+	for (int i = 0; i < ss; i++)
+	{
+		for (int j = 0; j < ss; j++)
+		{
+			if (pr[i] < pr[j])
+			{
+				hpr = pr[i];
+				pr[i] = pr[j];
+				pr[j] = hpr;
+
+				hpr = pri[i];
+				pri[i] = pri[j];
+				pri[j] = hpr;
+			}
+		}
+	}
+
 	while (vso > 0)
 	{
-		vv = minv(d, ss, ll);
+		vv = minv(d, ss, ll, pri);
 		ll[vv] = true;
 		for (int i = 0; i < ss; i++)
 		{
-			if (ms[vv][i] == 1 && ll[i] == false)
+			if (ms[vv][pri[i]] == 1 && ll[pri[i]] == false)
 			{
-				if (d[i] > d[vv] + 1)
+				if (d[pri[i]] > d[vv] + 1)
 				{
-					d[i] = d[vv] + 1;
-					qq[i] = vv+1;
+					d[pri[i]] = d[vv] + 1;
+					qq[pri[i]] = vv+1;
 					vso++;
 				}
 			}
@@ -120,11 +167,11 @@ void routeout(int* qq, int ss, int a, int v, int* r, int& iii)
 	else cout << " [!] No way from first vertex to finish";
 	cout << "\n";
 }
-int minv(int* d, int ss, bool* ll)
+int minv(int* d, int ss, bool* ll, int* pri)
 {
 	int min = INT_MAX;
 	int ir = -1;
-	for (int i = 0; i < ss; i++) if (min > d[i] && ll[i] == false) { min = d[i]; ir = i; }
+	for (int i = 0; i < ss; i++) if (min > d[pri[i]] && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
 	return ir;
 }
 void makems(int** mm, int k, int kk, int** ms)
