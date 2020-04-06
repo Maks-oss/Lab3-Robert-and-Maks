@@ -9,7 +9,7 @@ char symb(int N);
 void makems(int** mm, int k, int kk, int** ms);
 void lout(int** mm, int k, int kk, int* r, int iii);
 
-int minv(double* d, int n, bool* ll, int* pri);
+int nextv(double* d, int n, bool* ll, int* pri);
 void routeout(int* qq, int ss, int a, int v, int* r, int& iii);
 
 void endcord(int** mm, int k, int kk, int y, int& iend, int& jend);
@@ -106,11 +106,10 @@ void A(int x, double*d, int ss, bool* ll, int* pri, int* vi, int* vj, int**ms, i
 				{
 					d[pri[i]] = d[vv] + sqrt(pow(vi[vv] - vi[pri[i]], 2) + pow(vj[vv] - vj[pri[i]], 2));
 					qq[pri[i]] = vv + 1;
-					//cout << pri[i] + 1 << " " << d[pri[i]] <<"\n";
 				}
 			}
 		}
-		vv = minv(d, ss, ll, pri);
+		vv = nextv(d, ss, ll, pri);
 	}
 }
 void distsort(double*pr, int*pri, int ss)
@@ -133,7 +132,6 @@ void distsort(double*pr, int*pri, int ss)
 			}
 		}
 	}
-	//for (int i = 0; i < ss; i++) cout << pri[i] << " " << pr[i] << endl;
 }
 void distv(int**mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int jend)
 {
@@ -183,12 +181,10 @@ void routeout(int* qq, int ss, int a, int v, int* r, int& iii)
 	}
 	else cout << "\n [!] No way from first vertex to finish";
 }
-int minv(double* d, int ss, bool* ll, int* pri)
+int nextv(double* d, int ss, bool* ll, int* pri)
 {
-	double min = INT_MAX;
-	int ir = -1;
-	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+2 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
-	return ir;
+	for (int i = 0; i < ss; i++) if (INT_MAX != d[pri[i]] && ll[pri[i]] == false) { return pri[i]; }
+	return -1;
 }
 void makems(int** mm, int k, int kk, int** ms)
 {
@@ -198,10 +194,10 @@ void makems(int** mm, int k, int kk, int** ms)
 		{
 			if (mm[i][j] >= 1)
 			{
-				if (j + 1 < kk && i + 1 < k) if (mm[i + 1][j + 1] >= 1) { ms[mm[i + 1][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j + 1] - 1] = 1; }
-				if (j - 1 >= 0 && i - 1 >= 0) if (mm[i - 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j - 1] - 1] = 1; ms[mm[i - 1][j - 1] - 1][mm[i][j] - 1] = 1; }
-				if (j - 1 >= 0 && i + 1 < k) if (mm[i + 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i + 1][j - 1] - 1] = 1; ms[mm[i + 1][j - 1] - 1][mm[i][j] - 1] = 1; }
-				if (i - 1 >= 0 && j + 1 < kk) if (mm[i - 1][j + 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j + 1] - 1] = 1; ms[mm[i - 1][j + 1] - 1][mm[i][j] - 1] = 1; }
+				//if (j + 1 < kk && i + 1 < k) if (mm[i + 1][j + 1] >= 1) { ms[mm[i + 1][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j + 1] - 1] = 1; }
+				//if (j - 1 >= 0 && i - 1 >= 0) if (mm[i - 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j - 1] - 1] = 1; ms[mm[i - 1][j - 1] - 1][mm[i][j] - 1] = 1; }
+				//if (j - 1 >= 0 && i + 1 < k) if (mm[i + 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i + 1][j - 1] - 1] = 1; ms[mm[i + 1][j - 1] - 1][mm[i][j] - 1] = 1; }
+				//if (i - 1 >= 0 && j + 1 < kk) if (mm[i - 1][j + 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j + 1] - 1] = 1; ms[mm[i - 1][j + 1] - 1][mm[i][j] - 1] = 1; }
 
 				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]-1][mm[i][j]-1] = 1; ms[mm[i][j]-1][mm[i - 1][j]-1] = 1; }
 				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1]-1][mm[i][j]-1] = 1; ms[mm[i][j]-1][mm[i][j - 1]-1] = 1; }
