@@ -152,6 +152,7 @@ void distv(int**mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int j
 }
 void endcord(int** mm, int k, int kk, int y, int& iend, int& jend)
 {
+	bool vso = false;
 	for (int i = 0; i < k; i++)
 	{
 		for (int j = 0; j < kk; j++)
@@ -160,8 +161,10 @@ void endcord(int** mm, int k, int kk, int y, int& iend, int& jend)
 			{
 				iend = i;
 				jend = j;
+				vso = true;
 			}
 		}
+		if (vso == true) break;
 	}
 }
 void routeout(int* qq, int ss, int a, int v, int* r, int& iii)
