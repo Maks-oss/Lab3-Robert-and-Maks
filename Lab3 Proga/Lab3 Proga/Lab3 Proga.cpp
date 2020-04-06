@@ -21,10 +21,6 @@ int main()
 {
 	string fff = "";
 	ifstream file("input.txt");
-	if (!file.is_open())
-	{
-		cout << "Nope";
-	}
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -110,6 +106,7 @@ void A(int x, double*d, int ss, bool* ll, int* pri, int* vi, int* vj, int**ms, i
 				{
 					d[pri[i]] = d[vv] + sqrt(pow(vi[vv] - vi[pri[i]], 2) + pow(vj[vv] - vj[pri[i]], 2));
 					qq[pri[i]] = vv + 1;
+					//cout << pri[i] + 1 << " " << d[pri[i]] <<"\n";
 				}
 			}
 		}
@@ -120,11 +117,11 @@ void distsort(double*pr, int*pri, int ss)
 {
 	double hpr;
 	int hppr;
-	for (int i = 0; i < ss; i++)
+	for (int i = 0; i < ss-1; i++)
 	{
-		for (int j = 0; j < ss; j++)
+		for (int j = i; j < ss; j++)
 		{
-			if (pr[i] < pr[j])
+			if (pr[i] > pr[j])
 			{
 				hpr = pr[i];
 				pr[i] = pr[j];
@@ -136,6 +133,7 @@ void distsort(double*pr, int*pri, int ss)
 			}
 		}
 	}
+	//for (int i = 0; i < ss; i++) cout << pri[i] << " " << pr[i] << endl;
 }
 void distv(int**mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int jend)
 {
@@ -160,7 +158,7 @@ void endcord(int** mm, int k, int kk, int y, int& iend, int& jend)
 	{
 		for (int j = 0; j < kk; j++)
 		{
-			if (mm[i][j] == y + 1)
+			if (mm[i][j]-1 == y)
 			{
 				iend = i;
 				jend = j;
@@ -189,7 +187,7 @@ int minv(double* d, int ss, bool* ll, int* pri)
 {
 	double min = INT_MAX;
 	int ir = -1;
-	for (int i = 0; i < ss; i++) if (min > d[pri[i]] && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
+	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+1 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
 	return ir;
 }
 void makems(int** mm, int k, int kk, int** ms)
@@ -213,39 +211,39 @@ void makems(int** mm, int k, int kk, int** ms)
 		}
 	}
 }
-//char symb(int N)
-//{
-//	while (N > 60)
-//	{
-//		N -= 61;
-//	}
-//	if (N == 0) return '!';//start
-//	else if (N < 10) return N + 48;
-//	else if (N + 87 <= 122) return N + 87;
-//	else if (N + 29 <= 87) return N + 29; //для - 'X'
-//	else if (N + 30 <= 90) return N + 30;
-//	return '+';
-//}
 char symb(int N)
 {
-	while (N > 8)
+	while (N > 60)
 	{
-		N -= 9;
+		N -= 61;
 	}
-	switch (N)
-	{
-	case 0: return 'M'; 
-	case 1: return 'a';
-	case 2: return 'k';
-	case 3: return 's';
-	case 4: return '-';
-	case 5: return 'L';
-	case 6: return 'O';
-	case 7: return 'H';
-	case 8: return '-';
-	}
+	if (N == 0) return '!';//start
+	else if (N < 10) return N + 48;
+	else if (N + 87 <= 122) return N + 87;
+	else if (N + 29 <= 87) return N + 29; //для - 'X'
+	else if (N + 30 <= 90) return N + 30;
 	return '+';
 }
+//char symb(int N)
+//{
+//	while (N > 8)
+//	{
+//		N -= 9;
+//	}
+//	switch (N)
+//	{
+//	case 0: return 'M'; 
+//	case 1: return 'a';
+//	case 2: return 'k';
+//	case 3: return 's';
+//	case 4: return '-';
+//	case 5: return 'L';
+//	case 6: return 'O';
+//	case 7: return 'H';
+//	case 8: return '-';
+//	}
+//	return '+';
+//}
 void lout(int** mm, int k, int kk, int* r, int iii)
 {
 	ofstream fout;
