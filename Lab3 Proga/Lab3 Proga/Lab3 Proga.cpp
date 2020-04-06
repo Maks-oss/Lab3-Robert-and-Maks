@@ -20,7 +20,7 @@ void A(int x, double* d, int ss, bool* ll, int* pri, int* vi, int* vj, int** ms,
 int main()
 {
 	string fff = "";
-	ifstream file("input.txt");
+	ifstream file("d:\\Y.txt");
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -33,7 +33,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("input.txt");
+	file.open("d:\\Y.txt");
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
