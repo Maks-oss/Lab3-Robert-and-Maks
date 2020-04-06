@@ -187,7 +187,7 @@ int minv(double* d, int ss, bool* ll, int* pri)
 {
 	double min = INT_MAX;
 	int ir = -1;
-	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+1 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
+	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+2 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
 	return ir;
 }
 void makems(int** mm, int k, int kk, int** ms)
