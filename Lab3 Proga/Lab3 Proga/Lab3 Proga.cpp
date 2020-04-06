@@ -17,6 +17,40 @@ void distv(int** mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int 
 void distsort(double* pr, int* pri, int ss);
 void A(int x, double* d, int ss, bool* ll, int* pri, int* vi, int* vj, int** ms, int* qq);
 
+class Queue
+{
+private:
+	int* pri;
+	double* d;
+	int ss;
+	bool* ll;
+public:
+	Queue(int size);
+	int minv();
+	/*{
+		double min = INT_MAX;
+		int ir = -1;
+		for (int i = 0; i < ss; i++) if (min >= d[pri[i]] + 2 && e[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
+		return ir;
+	}*/
+};
+
+Queue::Queue(int size)
+{
+	ss = size;
+	ll = new bool[size];
+	pri = new int[size];
+	d = new double[size];
+}
+int Queue::minv()
+{
+	double min = INT_MAX;
+	
+}
+
+
+
+
 int main()
 {
 	string fff = "";
@@ -183,13 +217,13 @@ void routeout(int* qq, int ss, int a, int v, int* r, int& iii)
 	}
 	else cout << "\n [!] No way from first vertex to finish";
 }
-int minv(double* d, int ss, bool* ll, int* pri)
-{
-	double min = INT_MAX;
-	int ir = -1;
-	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+1 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
-	return ir;
-}
+//int minv(double* d, int ss, bool* ll, int* pri)
+//{
+//	double min = INT_MAX;
+//	int ir = -1;
+//	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+2 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
+//	return ir;
+//}
 void makems(int** mm, int k, int kk, int** ms)
 {
 	for (int i = 0; i < k; i++)
