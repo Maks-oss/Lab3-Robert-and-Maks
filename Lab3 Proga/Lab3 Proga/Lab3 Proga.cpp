@@ -5,22 +5,32 @@
 
 using namespace std;
 
+
+struct Vert
+{
+	bool ll; //відвідана?
+	double pr, d; // координатка відстань від кінцевої верш; мінімальна відстань до початкової верш.
+	int pri, vi, vj, qq; // номер вершини; x координата; y координата; номер предка
+};
+
+struct Route { int r; }; // номер вершини (утв наш шлях)
+
 char symb(int N);
 void makems(int** mm, int k, int kk, int** ms);
-void lout(int** mm, int k, int kk, int* r, int iii);
+void lout(int** mm, int k, int kk, Route* route, Vert* vert, int iii);
 
-int nextv(double* d, int n, bool* ll, int* pri);
-void routeout(int* qq, int ss, int a, int v, int* r, int& iii);
+int nextv(Vert* vert, int n);
+void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii);
 
 void endcord(int** mm, int k, int kk, int y, int& iend, int& jend);
-void distv(int** mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int jend);
-void distsort(double* pr, int* pri, int ss);
-void A(int x, double* d, int ss, bool* ll, int* pri, int* vi, int* vj, int** ms, int* qq);
+void distv(int** mm, int k, int kk, Vert* vert, int iend, int jend);
+void distsort(Vert* vert, int ss);
+void A(int x, int ss, Vert* vert, int** ms);
 
 int main()
 {
 	string fff = "";
-	ifstream file("d:\\Y.txt");
+	ifstream file("input.txt");
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -33,7 +43,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("d:\\Y.txt");
+	file.open("input.txt");
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -44,6 +54,8 @@ int main()
 			else mm[i][j / 2] = 0;
 		}
 	}
+	Vert* vert = new Vert[ss];						////////////////
+	Route* route = new Route[ss];					////////////////
 	cout << " Labyrinth vertices: " << endl;
 	for (int i = 0; i < k; i++)
 	{
@@ -69,50 +81,42 @@ int main()
 	if (y > ss || y <= 0) { cout << " [!] Wrond number!"; return 1; }
 	x--;
 	y--;
-	double* d = new double[ss];
-	bool* ll = new bool[ss];
-	for (int i = 0; i < ss; i++) { d[i] = INT_MAX; ll[i] = false; }
-	d[x] = 0;
-	int* qq = new int[ss];
-	for (int i = 0; i < ss; i++) qq[i] = 0;
+	for (int i = 0; i < ss; i++) { vert[i].d = INT_MAX; vert[i].ll = false; }
+	vert[x].d = 0;
+	for (int i = 0; i < ss; i++) vert[i].qq = 0;
 	int iend, jend;
 	endcord(mm, k, kk, y, iend, jend);
-	double* pr = new double[ss];
-	int* vi = new int[ss];
-	int* vj = new int[ss];
-	distv(mm, k, kk, vi, vj, pr, iend, jend);
-	int* pri = new int[ss];
-	for (int i = 0; i < ss; i++) pri[i] = i;
-	distsort(pr, pri, ss);
-	A(x, d, ss, ll, pri, vi, vj, ms, qq);
-	int* r = new int[ss];
+	distv(mm, k, kk, vert, iend, jend);
+	for (int i = 0; i < ss; i++) vert[i].pri = i;
+	distsort(vert, ss);
+	A(x, ss, vert, ms);
 	int iii = 0;
-	routeout(qq, ss, x, y, r, iii);
-	if (r[iii] != 0) lout(mm, k, kk, r, iii);
+	routeout(route, vert, ss, x, y, iii);
+	if (route[iii].r != 0) lout(mm, k, kk, route, vert, iii);
 	return 0;
 }
 
-void A(int x, double* d, int ss, bool* ll, int* pri, int* vi, int* vj, int** ms, int* qq)
+void A(int x, int ss, Vert* vert, int** ms)
 {
 	int vv = x;
 	while (vv != -1)
 	{
-		ll[vv] = true;
+		vert[vv].ll = true;
 		for (int i = 0; i < ss; i++)
 		{
-			if (ms[vv][pri[i]] == 1 && ll[pri[i]] == false)
+			if (ms[vv][vert[i].pri] == 1 && vert[vert[i].pri].ll == false)
 			{
-				if (d[pri[i]] > d[vv] + 1/*sqrt(pow(vi[vv] - vi[pri[i]], 2) + pow(vj[vv] - vj[pri[i]], 2))*/)
+				if (vert[vert[i].pri].d > vert[vv].d + sqrt(pow(vert[vv].vi - vert[vert[i].pri].vi, 2) + pow(vert[vv].vj - vert[vert[i].pri].vj, 2)))
 				{
-					d[pri[i]] = d[vv] + 1/*sqrt(pow(vi[vv] - vi[pri[i]], 2) + pow(vj[vv] - vj[pri[i]], 2))*/;
-					qq[pri[i]] = vv + 1;
+					vert[vert[i].pri].d = vert[vv].d + sqrt(pow(vert[vv].vi - vert[vert[i].pri].vi, 2) + pow(vert[vv].vj - vert[vert[i].pri].vj, 2));
+					vert[vert[i].pri].qq = vv + 1;
 				}
 			}
 		}
-		vv = nextv(d, ss, ll, pri);
+		vv = nextv(vert, ss);
 	}
 }
-void distsort(double* pr, int* pri, int ss)
+void distsort(Vert* vert, int ss)
 {
 	double hpr;
 	int hppr;
@@ -120,20 +124,20 @@ void distsort(double* pr, int* pri, int ss)
 	{
 		for (int j = i; j < ss; j++)
 		{
-			if (pr[i] > pr[j])
+			if (vert[i].pr > vert[j].pr)
 			{
-				hpr = pr[i];
-				pr[i] = pr[j];
-				pr[j] = hpr;
+				hpr = vert[i].pr;
+				vert[i].pr = vert[j].pr;
+				vert[j].pr = hpr;
 
-				hppr = pri[i];
-				pri[i] = pri[j];
-				pri[j] = hppr;
+				hppr = vert[i].pri;
+				vert[i].pri = vert[j].pri;
+				vert[j].pri = hppr;
 			}
 		}
 	}
 }
-void distv(int** mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int jend)
+void distv(int** mm, int k, int kk, Vert* vert, int iend, int jend)
 {
 	int ss = 0;
 	for (int i = 0; i < k; i++)
@@ -142,9 +146,9 @@ void distv(int** mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int 
 		{
 			if (mm[i][j] >= 1)
 			{
-				pr[ss] = 1/*sqrt(pow(iend - i, 2) + pow(jend - j, 2))*/;
-				vi[ss] = i;
-				vj[ss] = j;
+				vert[ss].pr = sqrt(pow(iend - i, 2) + pow(jend - j, 2));
+				vert[ss].vi = i;
+				vert[ss].vj = j;
 				ss++;
 			}
 		}
@@ -167,26 +171,26 @@ void endcord(int** mm, int k, int kk, int y, int& iend, int& jend)
 		if (vso == true) break;
 	}
 }
-void routeout(int* qq, int ss, int a, int v, int* r, int& iii)
+void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii)
 {
 	int kk = v + 1;
-	r[0] = kk;
+	route[0].r = kk;
 	while (kk != a + 1 && iii < ss && kk>0)
 	{
 		iii++;
-		kk = qq[kk - 1];
-		r[iii] = kk;
+		kk = vert[kk - 1].qq;
+		route[iii].r = kk;
 	}
 	if (kk != 0)
 	{
-		cout << "\n Our route: " << r[iii];
-		for (int i = iii - 1; i >= 0; i--) cout << "->" << r[i];
+		cout << "\n Our route: " << route[iii].r;
+		for (int i = iii - 1; i >= 0; i--) cout << "->" << route[i].r;
 	}
 	else cout << "\n [!] No way from first vertex to finish";
 }
-int nextv(double* d, int ss, bool* ll, int* pri)
+int nextv(Vert* vert, int ss)
 {
-	for (int i = 0; i < ss; i++) if (INT_MAX != d[pri[i]] && ll[pri[i]] == false) { return pri[i]; }
+	for (int i = 0; i < ss; i++) if (INT_MAX != vert[vert[i].pri].d && vert[vert[i].pri].ll == false) { return vert[i].pri; }
 	return -1;
 }
 void makems(int** mm, int k, int kk, int** ms)
@@ -221,29 +225,9 @@ char symb(int N)
 	else if (N + 87 <= 122) return N + 87;
 	else if (N + 29 <= 87) return N + 29; //для - 'X'
 	else if (N + 30 <= 90) return N + 30;
-	return '+';
+	return '?';
 }
-//char symb(int N)
-//{
-//	while (N > 8)
-//	{
-//		N -= 9;
-//	}
-//	switch (N)
-//	{
-//	case 0: return 'M'; 
-//	case 1: return 'a';
-//	case 2: return 'k';
-//	case 3: return 's';
-//	case 4: return '-';
-//	case 5: return 'L';
-//	case 6: return 'O';
-//	case 7: return 'H';
-//	case 8: return '-';
-//	}
-//	return '+';
-//}
-void lout(int** mm, int k, int kk, int* r, int iii)
+void lout(int** mm, int k, int kk, Route* route, Vert* vert, int iii)
 {
 	ofstream fout;
 	fout.open("output.txt");
@@ -258,7 +242,7 @@ void lout(int** mm, int k, int kk, int* r, int iii)
 			for (int hh = 0; hh <= iii; hh++)
 			{
 
-				if (mm[i][j] == r[hh]) { h = iii - hh; break; }
+				if (mm[i][j] == route[hh].r) { h = iii - hh; break; }
 			}
 			if (h != -1) { cout << symb(h) << " ";	fout << symb(h) << " "; }
 			else
