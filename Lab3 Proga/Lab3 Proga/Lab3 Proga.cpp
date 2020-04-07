@@ -1,23 +1,53 @@
 ﻿#include<fstream>
 #include <iostream>
-#include<string>
-#include<utility>
-#include<algorithm>
-#include<vector>
-#include<cmath>
-#include<iomanip>
-#include<queue>
-char symb(int N);
-using namespace std;
-#define SIZE 2000
-void swap(int& t, int& k) { int temp = t; t = k; k = temp; }
-int h(int x, int y, int** ms, int k, int kk);
-void Adjance(int** mm, int k, int kk, int** ms);
-void A_star(int ss, int** ms,  int x, int y, int** mm, int k, int kk,int*prev);
-void reconstructpath(vector<int>& c, int* prev, int x, int y);
-void file_out(vector<int>& c, int** mm, int k, int kk);
+#include <string>
+#include <iomanip>
 
-typedef pair<int, int>P;
+using namespace std;
+
+char symb(int N);
+void makems(int** mm, int k, int kk, int** ms);
+void lout(int** mm, int k, int kk, int* r, int iii);
+
+int minv(double* d, int n, bool* ll, int* pri);
+void routeout(int* qq, int ss, int a, int v, int* r, int& iii);
+
+void endcord(int** mm, int k, int kk, int y, int& iend, int& jend);
+void distv(int** mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int jend);
+void distsort(double* pr, int* pri, int ss);
+void A(int x, double* d, int ss, bool* ll, int* pri, int* vi, int* vj, int** ms, int* qq);
+
+class Queue
+{
+private:
+	int* pri;
+	double* d;
+	int ss;
+	bool* ll;
+public:
+	Queue(int size);
+	int minv();
+	/*{
+		double min = INT_MAX;
+		int ir = -1;
+		for (int i = 0; i < ss; i++) if (min >= d[pri[i]] + 2 && e[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
+		return ir;
+	}*/
+};
+
+Queue::Queue(int size)
+{
+	ss = size;
+	ll = new bool[size];
+	pri = new int[size];
+	d = new double[size];
+}
+int Queue::minv()
+{
+	double min = INT_MAX;
+	
+}
+
 
 
 
@@ -25,10 +55,6 @@ int main()
 {
 	string fff = "";
 	ifstream file("d:\\Y.txt");
-	if (!file.is_open())
-	{
-		cout << "Nope";
-	}
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -42,7 +68,6 @@ int main()
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
 	file.open("d:\\Y.txt");
-
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -53,7 +78,7 @@ int main()
 			else mm[i][j/2] = 0;
 		}
 	}
-	cout << "Labyrinth nodes: " << endl;
+	cout << " Labyrinth vertices: " << endl;
 	for (int i = 0; i < k; i++)
 	{
 		for (int j = 0; j < kk; j++)
@@ -62,64 +87,83 @@ int main()
 		}
 		cout << "\n"<<" ";
 	}
-
-
-
 	int** ms = new int* [ss];
-	for (int i = 1; i <= ss; i++) ms[i] = new int[ss];
-
-	for (int i = 1; i <= ss; i++)
+	for (int i = 0; i < ss; i++)
 	{
-		for (int j = 1; j <= ss; j++)
-		{
-			ms[i][j] = 0;
-		}
+		ms[i] = new int[ss];
+		for (int j = 0; j < ss; j++) ms[i][j] = INT_MAX;
 	}
-	Adjance(mm, k, kk, ms);
+	makems(mm, k, kk, ms);
 	cout << endl;
 	int x, y;
-	vector<int>c;
-	cout << "Input coordinate: ";	cin >> x;
+	cout << " Print start vertex: ";	cin >> x;
+	if (x > ss || x <= 0) { cout << " [!] Wrond number!"; return 1; }
 	cout << endl;
-	cout << "Input end node: ";		cin >> y;
-	int* prev = new int[ss];
-	for (int i = 0; i < ss; i++) { prev[i] = 0; }
-	A_star(ss, ms, x, y, mm, k, kk,prev);
-	reconstructpath(c, prev, x, y);
-	cout << endl;
-	file_out(c, mm, k, kk);
-	
-
+	cout << " Print finish vertex: ";	cin >> y;	
+	if (y > ss || y <= 0) { cout << " [!] Wrond number!"; return 1; }
+	x--;
+	y--;
+	double* d = new double[ss];
+	bool* ll = new bool[ss];
+	for (int i = 0; i < ss; i++) { d[i] = INT_MAX; ll[i] = false; }
+	d[x] = 0;
+	int* qq = new int[ss];
+	for (int i = 0; i < ss; i++) qq[i] = 0;
+	int iend, jend;
+	endcord(mm, k, kk, y, iend, jend);
+	double* pr = new double[ss];
+	int* vi = new int[ss];
+	int* vj = new int[ss];
+	distv(mm, k, kk, vi, vj, pr, iend, jend);
+	int* pri = new int[ss];
+	for (int i = 0; i < ss; i++) pri[i] = i;
+	distsort(pr, pri, ss);
+	A(x, d, ss, ll, pri, vi, vj, ms, qq);
+	int* r = new int[ss];
+	int iii = 0;
+	routeout(qq, ss, x, y, r, iii);
+	if(r[iii] != 0) lout(mm, k, kk, r, iii);
 	return 0;
 }
 
-void Adjance(int** mm, int k, int kk, int** ms)
+void A(int x, double*d, int ss, bool* ll, int* pri, int* vi, int* vj, int**ms, int* qq)
 {
-	for (int i = 0; i < k; i++)
+	int vv = x;
+	while (vv != -1)
 	{
-		for (int j = 0; j < kk; j++)
+		ll[vv] = true;
+		for (int i = 0; i < ss; i++)
 		{
-			if (mm[i][j] >= 1&&mm[i][j+1]>=1)
+			if (ms[vv][pri[i]] == 1 && ll[pri[i]] == false)
 			{
-				ms[mm[i][j]][mm[i][j + 1]] = 1;
-				ms[mm[i][j + 1]][mm[i][j]] = 1;
+				if (d[pri[i]] > d[vv] + sqrt(pow(vi[vv] - vi[pri[i]], 2) + pow(vj[vv] - vj[pri[i]], 2)))
+				{
+					d[pri[i]] = d[vv] + sqrt(pow(vi[vv] - vi[pri[i]], 2) + pow(vj[vv] - vj[pri[i]], 2));
+					qq[pri[i]] = vv + 1;
+					
+				}
 			}
-			if (mm[i][j] >= 1 && mm[i + 1][j] >= 1)
+		}
+		vv = minv(d, ss, ll, pri);
+	}
+}
+void distsort(double*pr, int*pri, int ss)
+{
+	double hpr;
+	int hppr;
+	for (int i = 0; i < ss-1; i++)
+	{
+		for (int j = i; j < ss; j++)
+		{
+			if (pr[i] > pr[j])
 			{
-				ms[mm[i][j]][mm[i + 1][j]] = 1;
-				ms[mm[i+1][j]][mm[i][j]] = 1;
-			}
-			//For diagonal movement
-			/*if (mm[i][j]>=1 &&mm[i+1][j+1]>=1)
-			{
-				ms[mm[i][j]][mm[i + 1][j + 1]] = 1;
-				ms[mm[i+1][j+1]][mm[i][j]] = 1;
-				
-			}
-			if (mm[i][j] >= 1 && mm[i - 1][j - 1] >= 1)
-			{
-				ms[mm[i][j]][mm[i - 1][j - 1]] = 1;
-				ms[mm[i - 1][j - 1]][mm[i][j]] = 1;
+				hpr = pr[i];
+				pr[i] = pr[j];
+				pr[j] = hpr;
+
+				hppr = pri[i];
+				pri[i] = pri[j];
+				pri[j] = hppr;
 			}
 			if (mm[i][j] >= 1 && mm[i + 1][j - 1] >= 1)
 			{
@@ -128,13 +172,89 @@ void Adjance(int** mm, int k, int kk, int** ms)
 			}*/
 		}
 	}
+	//for (int i = 0; i < ss; i++) cout << pri[i] << " " << pr[i] << endl;
 }
+void distv(int**mm, int k, int kk, int* vi, int* vj, double* pr, int iend, int jend)
+{
+	int ss = 0;
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] >= 1)
+			{
+				pr[ss] = sqrt(pow(iend - i, 2) + pow(jend - j, 2));
+				vi[ss] = i;
+				vj[ss] = j;
+				ss++;
+			}
+		}
+	}
+}
+void endcord(int** mm, int k, int kk, int y, int& iend, int& jend)
+{
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j]-1 == y)
+			{
+				iend = i;
+				jend = j;
+			}
+		}
+	}
+}
+void routeout(int* qq, int ss, int a, int v, int* r, int& iii)
+{
+	int kk = v + 1;
+	r[0] = kk;
+	while (kk != a + 1 && iii < ss && kk>0)
+	{
+		iii++;
+		kk = qq[kk - 1];
+		r[iii] = kk;
+	}
+	if (kk != 0)
+	{
+		cout << "\n Our route: " << r[iii];
+		for (int i = iii - 1; i >= 0; i--) cout << "->" << r[i];
+	}
+	else cout << "\n [!] No way from first vertex to finish";
+}
+//int minv(double* d, int ss, bool* ll, int* pri)
+//{
+//	double min = INT_MAX;
+//	int ir = -1;
+//	for (int i = 0; i < ss; i++) if (min >= d[pri[i]]+2 && ll[pri[i]] == false) { min = d[pri[i]]; ir = pri[i]; }
+//	return ir;
+//}
+void makems(int** mm, int k, int kk, int** ms)
+{
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] >= 1)
+			{
+				if (j + 1 < kk && i + 1 < k) if (mm[i + 1][j + 1] >= 1) { ms[mm[i + 1][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j + 1] - 1] = 1; }
+				if (j - 1 >= 0 && i - 1 >= 0) if (mm[i - 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j - 1] - 1] = 1; ms[mm[i - 1][j - 1] - 1][mm[i][j] - 1] = 1; }
+				if (j - 1 >= 0 && i + 1 < k) if (mm[i + 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i + 1][j - 1] - 1] = 1; ms[mm[i + 1][j - 1] - 1][mm[i][j] - 1] = 1; }
+				if (i - 1 >= 0 && j + 1 < kk) if (mm[i - 1][j + 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j + 1] - 1] = 1; ms[mm[i - 1][j + 1] - 1][mm[i][j] - 1] = 1; }
 
+				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j]-1][mm[i][j]-1] = 1; ms[mm[i][j]-1][mm[i - 1][j]-1] = 1; }
+				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1]-1][mm[i][j]-1] = 1; ms[mm[i][j]-1][mm[i][j - 1]-1] = 1; }
+				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j]-1][mm[i][j]-1] = 1; ms[mm[i][j]-1][mm[i + 1][j]-1] = 1; }
+				if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j + 1]-1][mm[i][j]-1] = 1; ms[mm[i][j]-1][mm[i][j + 1]-1] = 1; }
+			}
+		}
+	}
+}
 char symb(int N)
 {
 	while (N > 60)
 	{
-		N -= 60;
+		N -= 61;
 	}
 	if (N == 0) return '!';//start
 	else if (N < 10) return N + 48;
@@ -143,115 +263,25 @@ char symb(int N)
 	else if (N + 30 <= 90) return N + 30;
 	return '+';
 }
-int h(int x, int y, int** ms, int k, int kk)
-{
-	int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-
-	for (int i = 0; i < k; i++)
-	{
-		for (int j = 0; j < kk; j++)
-		{
-			if (ms[i][j] == x) { x1 = i;	y1 = j; }
-			if (ms[i][j] == y) {
-				x2 = i; y2 = j;
-			}
-
-		}
-	}
-	int dx = abs(x1 - x2);
-	int dy = abs(y1 - y2);
-	//return 4 * (dx + dy) + (4 - 2 * 8) * min(dx, dy);
-	//return sqrt(dx * dx + dy * dy);
-	//return(dx * dx + dy * dy);
-	return (dx + dy);
-
-}
-
-void A_star(int ss, int** ms,  int x, int y, int** mm, int k, int kk,int*prev)
-{
-	priority_queue<P, vector<P>, greater<P>>Q;
-	bool* used = new bool[ss];
-	for (int i = 1; i <= ss; i++) { used[i] = false;  }
-	int* g = new int[ss];
-	for (int i = 1; i <= ss; i++) { g[i] = INT_MAX; }
-	g[x] = 0;
-	prev[x] = 0;
-	int* f = new int[ss];
-	for (int i = 1; i <= ss; i++) { f[i] = 0; }
-	f[x] = g[x] + h(x, y, mm, k, kk);
-	Q.push(make_pair(f[x], x));
-	while (!Q.empty())
-	{
-		int current = Q.top().second;
-		if (current == y)
-		{
-			cout << "END" << endl;
-
-			break;
-		}
-		used[current] = true;
-		Q.pop();
-		for (int i = 1; i <= ss; i++)
-		{
-			int v = ms[current][i];
-			if (v == 1)
-			{
-				
-				if (g[current]+1 < g[i])
-				{
-					prev[i] = current;
-					g[i] = g[current]+1;
-					f[i] = g[i] + h(i, y, mm, k, kk);
-					if (!used[i])
-					{
-						
-						Q.push(make_pair(f[i], i));
-						
-					}
-
-				}
-			}
-		}
-	}
-}
-
-void reconstructpath(vector<int>& c, int* prev, int x, int y)
-{
-	int curr = y;
-	c.push_back(curr);
-	while (curr != x)
-	{
-		curr = prev[curr];
-		c.push_back(curr);
-	}
-	c.push_back(x);
-	reverse(c.begin(), c.end());
-}
-
-
-void file_out(vector<int>&c, int** mm, int k, int kk)
+void file_out(vector<int>& c, int** mm, int k, int kk)
 {
 	ofstream fout;
-	fout.open("d:\\output.txt");
-	bool is;
+	fout.open("output.txt");
+	int h;
+	cout << "\n";
 	for (int i = 0; i < k; i++)
 	{
 		cout << "\n | ";
 		for (int j = 0; j < kk; j++)
 		{
-			is = false;
-			for (int o = 0; o <c.size() ; o++)
+			h = -1;
+			for (int hh = 0; hh <= iii; hh++)
 			{
-				if (mm[i][j] == c[o])
-				{
-					is = true;
-
-					cout << symb(o) << ' '; fout << symb(o) << ' ';
-					break;
-				}
-
+				
+				if (mm[i][j] == r[hh]) { h = iii-hh; break; }
 			}
-			if (is == false)
+			if (h!=-1) { cout << symb(h) << " ";	fout << symb(h) << " "; }
+			else
 			{
 				if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
 				else { cout << "  ";	fout << " "; }
