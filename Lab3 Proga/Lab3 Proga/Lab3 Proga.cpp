@@ -17,7 +17,7 @@ struct Route { int r; }; // номер вершини (утв наш шлях)
 
 char symb(int N);
 void makems(int** mm, int k, int kk, int** ms);
-void lout(int** mm, int k, int kk, Route* route, Vert* vert, int iii);
+void lout(int** mm, int k, int kk, Route* routet, int iii);
 
 int nextv(Vert* vert, int n);
 void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii);
@@ -92,7 +92,7 @@ int main()
 	A(x, ss, vert, ms);
 	int iii = 0;
 	routeout(route, vert, ss, x, y, iii);
-	if (route[iii].r != 0) lout(mm, k, kk, route, vert, iii);
+	if (route[iii].r != 0) lout(mm, k, kk, route, iii);
 	return 0;
 }
 
@@ -227,7 +227,7 @@ char symb(int N)
 	else if (N + 30 <= 90) return N + 30;
 	return '?';
 }
-void lout(int** mm, int k, int kk, Route* route, Vert* vert, int iii)
+void lout(int** mm, int k, int kk, Route* route, int iii)
 {
 	ofstream fout;
 	fout.open("output.txt");
