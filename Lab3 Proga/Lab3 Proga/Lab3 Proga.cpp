@@ -175,7 +175,7 @@ void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii)
 {
 	int kk = v + 1;
 	route[0].r = kk;
-	while (kk != a + 1 )//&& iii < ss && kk>0)
+	while (kk != a + 1 && kk>0)
 	{
 		iii++;
 		kk = vert[kk - 1].qq;
