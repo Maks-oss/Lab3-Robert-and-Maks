@@ -30,7 +30,7 @@ void A(int x, int ss, Vert* vert, int** ms);
 int main()
 {
 	string fff = "";
-	ifstream file("D:\\Y.txt");
+	ifstream file("input.txt");
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -43,7 +43,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("D:\\Y.txt");
+	file.open("input.txt");
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -218,7 +218,7 @@ char symb(int N)
 {
 	while (N > 60)
 	{
-		N -= 61;
+		N -= 60;
 	}
 	if (N == 0) return '!';//start
 	else if (N < 10) return N + 48;
