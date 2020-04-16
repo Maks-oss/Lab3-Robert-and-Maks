@@ -30,7 +30,7 @@ void A(int x, int ss, Vert* vert, int** ms);
 int main()
 {
 	string fff = "";
-	ifstream file("input.txt");
+	ifstream file("D:\\Y.txt");
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -43,7 +43,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("input.txt");
+	file.open("D:\\Y.txt");
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -175,7 +175,7 @@ void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii)
 {
 	int kk = v + 1;
 	route[0].r = kk;
-	while (kk != a + 1 && iii < ss && kk>0)
+	while (kk != a + 1 && kk>0)
 	{
 		iii++;
 		kk = vert[kk - 1].qq;
