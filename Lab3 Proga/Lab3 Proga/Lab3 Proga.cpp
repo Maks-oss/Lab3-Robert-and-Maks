@@ -9,7 +9,7 @@
 #include<queue>
 char symb(int N);
 using namespace std;
-#define SIZE 2000
+int curr;
 void swap(int& t, int& k) { int temp = t; t = k; k = temp; }
 int h(int x, int y, int** ms, int k, int kk);
 void Adjance(int** mm, int k, int kk, int** ms);
@@ -21,14 +21,13 @@ void file_out(vector<int>& c, int** mm, int k, int kk);
 class Queue
 {
 	int* Va; int* Po;	//to store elements
-	int current, capacity;
+	int current;
 public:
 	Queue(int size)
 	{
 		Po = new int[size];
 		Va = new int[size];
 		current = 0;
-		capacity = size;
 	}
 	void push(int value, int pos)
 	{
@@ -51,12 +50,10 @@ public:
 				}
 			}
 		}
-		
-		
 	}
 	bool empty()
 	{
-		return size() == 0;
+		return current == 0;
 	}
 	void pop()
 	{
@@ -70,7 +67,6 @@ public:
 	{
 		return Va[0];
 	}
-	int size() { return current; }
 };
 
 
@@ -116,7 +112,8 @@ int main()
 	cout << "Labyrinth nodes: " << endl;
 	
 
-	cout << endl << endl;for (int i = 0; i < k; i++)
+	cout << endl << endl;
+	for (int i = 0; i < k; i++)
 	{
 		for (int j = 0; j < kk; j++)
 		{
@@ -285,13 +282,14 @@ void A_star(int ss, int** ms, int x, int y, int** mm, int k, int kk, int* prev)
 
 void reconstructpath(vector<int>& c, int* prev, int x, int y)
 {
-	int curr = y;
+	curr = y;
 	c.push_back(curr);
-	while (curr != x)
+	while (curr != x &&curr>0)
 	{
 		curr = prev[curr];
 		c.push_back(curr);
 	}
+	
 	c.push_back(x);
 	reverse(c.begin(), c.end());
 }
@@ -302,32 +300,36 @@ void file_out(vector<int>& c, int** mm, int k, int kk)
 	ofstream fout;
 	fout.open("d:\\output.txt");
 	bool is;
-	for (int i = 0; i < k; i++)
+	if (curr == 0) { cout << "No Path"; }
+	else
 	{
-		cout << "\n | ";
-		for (int j = 0; j < kk; j++)
+		for (int i = 0; i < k; i++)
 		{
-			is = false;
-			for (int o = 0; o < c.size(); o++)
+			cout << "\n | ";
+			for (int j = 0; j < kk; j++)
 			{
-				if (mm[i][j] == c[o])
+				is = false;
+				for (int o = 0; o < c.size(); o++)
 				{
-					is = true;
+					if (mm[i][j] == c[o])
+					{
+						is = true;
 
-					cout << symb(o) << ' '; fout << symb(o) << ' ';
-					break;
+						cout << symb(o) << ' '; fout << symb(o) << ' ';
+						break;
+					}
+
+				}
+				if (is == false)
+				{
+					if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
+					else { cout << "  ";	fout << " "; }
 				}
 
 			}
-			if (is == false)
-			{
-				if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
-				else { cout << "  ";	fout << " "; }
-			}
-
+			fout << endl;
+			cout << "|";
 		}
-		fout << endl;
-		cout << "|";
 	}
 }
 
