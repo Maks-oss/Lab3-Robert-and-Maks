@@ -17,7 +17,6 @@ void A_star(int ss, int** ms, int x, int y, int** mm, int k, int kk, int* prev);
 void reconstructpath(vector<int>& c, int* prev, int x, int y);
 void file_out(vector<int>& c, int** mm, int k, int kk);
 
-typedef pair<int, int>P;
 
 class Queue
 {
