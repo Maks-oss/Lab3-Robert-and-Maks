@@ -1,35 +1,188 @@
-﻿#include <fstream>
+﻿#include<fstream>
 #include <iostream>
-#include <string>
-#include <iomanip>
-
-using namespace std;
-
-struct Vert
+#include<string>
+#include<algorithm>
+#include<vector>
+#include<iomanip>
+struct Vertex
 {
-	bool ll; //відвідана?
-	double pr, d; // координатна відстань від кінцевої верш; мінімальна відстань до початкової верш.
-	int pri, vi, vj, qq; // номер вершини; x координата; y координата; номер предка
+	int i, j;
+	int ksos = 0;// кількість sosedi'в
+	int sosedi[8] = { -1 };
+};
+char symb(int N);
+using namespace std;
+int curr;
+int h(int x, int y, int** mm, int k, int kk)
+{
+	int x1, x2, y1, y2;
+	for (int i = 0; i < k; i++)
+	{
+		for (int j = 0; j < kk; j++)
+		{
+			if (mm[i][j] == x)
+			{
+				x1 = i; x2 = j;
+			}
+			if (mm[i][j] == y)
+			{
+				y1 = i; y2 = j;
+			}
+		}
+	}
+	int dx = abs(x1 - y1);
+	int dy = abs(x2 - y2);
+	//return 4 * (dx + dy) + (4 - 2 * 8) * min(dx, dy);
+	//return sqrt(dx * dx + dy * dy);
+	//return(dx * dx + dy * dy);
+	return (dx + dy);
+}
+class Queue
+{
+	int* Va; int* Po;	//to store elements
+	int current;
+public:
+	Queue(int size)
+	{
+		Po = new int[size];
+		Va = new int[size];
+		current = 0;
+	}
+	void push(int value, int pos)
+	{
+		Va[current] = value;
+		Po[current] = pos;
+		current++;
+		for (int i = 0; i < current; i++)
+		{
+			for (int j = i + 1; j < current; j++)
+			{
+				if (Po[i] > Po[j])
+				{
+					int temp = Po[i];
+					Po[i] = Po[j];
+					Po[j] = temp;
+					
+					int tmp = Va[i];
+					Va[i] = Va[j];
+					Va[j] = tmp;
+				}
+			}
+		}
+	}
+	bool empty()
+	{
+		return current == 0;
+	}
+	void pop()
+	{
+		for (int i = 0; i < current - 1; i++)
+		{
+			Va[i] = Va[i + 1];
+		}
+		current--;
+	}
+	int getmin()
+	{
+		return Va[0];
+	}
 };
 
-struct Route { int r; }; // номер вершини (утв наш шлях)
+void lout(int** mm, int k, int kk);
 
-char symb(int N);
-void makems(int** mm, int k, int kk, int** ms);
-void lout(int** mm, int k, int kk, Route* routet, int iii);
+void A_star(Vertex* node, int k, int kk, int** mm, int* prev, int ss, int x, int y)
+{
+	Queue Q(ss);
+	int* g = new int[ss];
+	bool* used = new bool[ss];
+	int* f = new int[ss];
+	for (int i = 0; i < ss; i++) { g[i] = INT_MAX; f[i] = 0; used[i] = false; }
+	g[y]=INT_MAX;
+	g[x] = 0;
+	f[x] = g[x] + h(x, y, mm, k, kk);
+	Q.push(x, f[x]);
+	while (!Q.empty())
+	{
+		int current = Q.getmin();
+		used[current] = true;
+	
+		if (current == y)
+		{
+			cout << "END: ";
+			break;
+		}
+		Q.pop();
+		for (int i = 0; i < node[current - 1].ksos; i++)
+		{
+			if (g[node[current-1].sosedi[i]] > g[current] + 1)
+			{
+				g[node[current-1].sosedi[i]] = g[current] + 1;
+				prev[node[current - 1].sosedi[i]] = current;
+				f[node[current - 1].sosedi[i]] = g[node[current - 1].sosedi[i]] + h(node[current - 1].sosedi[i], y, mm, k, kk);
+				if (!used[node[current - 1].sosedi[i]])
+				{
+					Q.push(node[current - 1].sosedi[i], f[node[current - 1].sosedi[i]]);
+				}
+			}
+		}
+	}
+}
+void reconstructpath(int* prev, vector<int>& c, int x, int y)
+{
+	curr = y;
 
-int nextv(Vert* vert, int n);
-void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii);
+	c.push_back(curr);
+	while (curr != x &&curr>0)
+	{
+		curr = prev[curr];
+		c.push_back(curr);
+	}	
+	c.push_back(x);
+	reverse(c.begin(), c.end());
+}
+void file_out(vector<int>& c, int** mm, int k, int kk)
+{
+	ofstream fout;
+	fout.open("d:\\output.txt");
+	bool is;
+	
+	if (curr == 0) { cout << "No Path"; }
+	else
+	{
+		for (int i = 0; i < k; i++)
+		{
+			cout << "\n | ";
+			for (int j = 0; j < kk; j++)
+			{
+				is = false;
+				for (int o = 0; o < c.size(); o++)
+				{
+					if (mm[i][j] == c[o])
+					{
+						is = true;
 
-void endcord(int** mm, int k, int kk, int y, int& iend, int& jend);
-void distv(int** mm, int k, int kk, Vert* vert, int iend, int jend);
-void distsort(Vert* vert, int ss);
-void A(int x, int ss, Vert* vert, int** ms);
+						cout << symb(o) << ' '; fout << symb(o) << ' ';
+						break;
+					}
+
+				}
+				if (is == false)
+				{
+					if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
+					else { cout << "  ";	fout << "  "; }
+				}
+
+			}
+			fout << endl;
+			cout << "|";
+		}
+	}
+}
 
 int main()
 {
 	string fff = "";
-	ifstream file("input.txt");
+	ifstream file("d:\\Y.txt");
 	int k = 0;
 	getline(file, fff);
 	int kk = fff.size() / 2 + 1;
@@ -42,7 +195,7 @@ int main()
 	int** mm = new int* [k];
 	for (int i = 0; i < k; i++) mm[i] = new int[kk];
 	file.close();
-	file.open("input.txt");
+	file.open("d:\\Y.txt");
 	int ss = 0;
 	for (int i = 0; i < k; i++)
 	{
@@ -53,165 +206,81 @@ int main()
 			else mm[i][j / 2] = 0;
 		}
 	}
-	Vert* vert = new Vert[ss];						////////////////
-	Route* route = new Route[ss];					////////////////
-	cout << " Labyrinth vertices: " << endl;
+	Vertex* mVert = new Vertex[ss];
+	lout(mm, k, kk);
+	int Sv, Ev, Ei, Ej;
+	cout << "\n Start vertex: ";
+	cin >> Sv;
+	cout << "\n Finish vertex: ";
+	cin >> Ev;
 	for (int i = 0; i < k; i++)
 	{
 		for (int j = 0; j < kk; j++)
 		{
-			cout << setw(6) << mm[i][j] << setw(6);
-		}
-		cout << "\n";
-	}
-	int** ms = new int* [ss];
-	for (int i = 0; i < ss; i++)
-	{
-		ms[i] = new int[ss];
-		for (int j = 0; j < ss; j++) ms[i][j] = INT_MAX;
-	}
-	makems(mm, k, kk, ms);
-	cout << endl;
-	int x, y;
-	cout << " Print start vertex: ";	cin >> x;
-	if (x > ss || x <= 0) { cout << " [!] Wrond number!"; return 1; }
-	cout << endl;
-	cout << " Print finish vertex: ";	cin >> y;
-	if (y > ss || y <= 0) { cout << " [!] Wrond number!"; return 1; }
-	x--;
-	y--;
-	for (int i = 0; i < ss; i++) { vert[i].d = INT_MAX; vert[i].ll = false; }
-	vert[x].d = 0;
-	for (int i = 0; i < ss; i++) vert[i].qq = 0;
-	int iend, jend;
-	endcord(mm, k, kk, y, iend, jend);
-	distv(mm, k, kk, vert, iend, jend);
-	for (int i = 0; i < ss; i++) vert[i].pri = i;
-	distsort(vert, ss);
-	A(x, ss, vert, ms);
-	int iii = 0;
-	routeout(route, vert, ss, x, y, iii);
-	if (route[iii].r != 0) lout(mm, k, kk, route, iii);
-	return 0;
-}
-
-void A(int x, int ss, Vert* vert, int** ms)
-{
-	int vv = x;
-	while (vv != -1)
-	{
-		vert[vv].ll = true;
-		for (int i = 0; i < ss; i++)
-		{
-			if (ms[vv][vert[i].pri] == 1 && vert[vert[i].pri].ll == false)
+			if (mm[i][j] >= 1)
 			{
-				if (vert[vert[i].pri].d > vert[vv].d + sqrt(pow(vert[vv].vi - vert[vert[i].pri].vi, 2) + pow(vert[vv].vj - vert[vert[i].pri].vj, 2)))
+				//For diagonal movement
+				if (i + 1 < k && j + 1 < kk)
 				{
-					vert[vert[i].pri].d = vert[vv].d + sqrt(pow(vert[vv].vi - vert[vert[i].pri].vi, 2) + pow(vert[vv].vj - vert[vert[i].pri].vj, 2));
-					vert[vert[i].pri].qq = vv + 1;
+					if (mm[i + 1][j + 1] >= 1)
+					{
+						mVert[mm[i][j] - 1].sosedi[mVert[mm[i][j] - 1].ksos] = mm[i + 1][j + 1];
+						mVert[mm[i + 1][j + 1] - 1].sosedi[mVert[mm[i + 1][j + 1] - 1].ksos] = mm[i][j];
+						mVert[mm[i + 1][j + 1] - 1].ksos++; mVert[mm[i][j] - 1].ksos++;
+					}
+				}
+				if (i + 1 < k && j - 1 >= 0)
+				{
+					if (mm[i + 1][j - 1] >= 1)
+					{
+						mVert[mm[i][j] - 1].sosedi[mVert[mm[i][j] - 1].ksos] = mm[i + 1][j - 1];
+						mVert[mm[i + 1][j - 1] - 1].sosedi[mVert[mm[i + 1][j - 1] - 1].ksos] = mm[i][j];
+						mVert[mm[i + 1][j - 1] - 1].ksos++; mVert[mm[i][j] - 1].ksos++;
+					}
+				}
+				//
+				if (i + 1 < k)
+				{
+					if (mm[i + 1][j] >= 1)
+					{
+						mVert[mm[i][j] - 1].sosedi[mVert[mm[i][j] - 1].ksos] = mm[i + 1][j];
+						mVert[mm[i + 1][j] - 1].sosedi[mVert[mm[i + 1][j] - 1].ksos] = mm[i][j];
+						mVert[mm[i + 1][j] - 1].ksos++; mVert[mm[i][j] - 1].ksos++;
+					}
+				}
+				if (j + 1 < kk)
+				{
+					if (mm[i][j + 1] >= 1)
+					{
+						mVert[mm[i][j] - 1].sosedi[mVert[mm[i][j] - 1].ksos] = mm[i][j + 1];
+						mVert[mm[i][j + 1] - 1].sosedi[mVert[mm[i][j + 1] - 1].ksos] = mm[i][j];
+						mVert[mm[i][j + 1] - 1].ksos++; mVert[mm[i][j] - 1].ksos++;
+					}
 				}
 			}
 		}
-		vv = nextv(vert, ss);
 	}
-}
-void distsort(Vert* vert, int ss)
-{
-	double hpr;
-	int hppr;
-	for (int i = 0; i < ss - 1; i++)
+	int* prev = new int[ss];
+	for (int i = 0; i < ss; i++)
 	{
-		for (int j = i; j < ss; j++)
-		{
-			if (vert[i].pr > vert[j].pr)
-			{
-				hpr = vert[i].pr;
-				vert[i].pr = vert[j].pr;
-				vert[j].pr = hpr;
+		prev[i] = 0;
+	}
+	vector<int>c;
+	A_star(mVert, k, kk, mm, prev, ss, Sv, Ev);
+	reconstructpath(prev, c, Sv, Ev);
+	file_out(c, mm, k, kk);
+}
 
-				hppr = vert[i].pri;
-				vert[i].pri = vert[j].pri;
-				vert[j].pri = hppr;
-			}
-		}
-	}
-}
-void distv(int** mm, int k, int kk, Vert* vert, int iend, int jend)
+void lout(int** mm, int k, int kk) // вивід оцифрованого лабіринту з номерами вершин
 {
-	int ss = 0;
+	cout << " -\n";
 	for (int i = 0; i < k; i++)
 	{
-		for (int j = 0; j < kk; j++)
-		{
-			if (mm[i][j] >= 1)
-			{
-				vert[ss].pr = sqrt(pow(iend - i, 2) + pow(jend - j, 2));
-				vert[ss].vi = i;
-				vert[ss].vj = j;
-				ss++;
-			}
-		}
+		cout << " ";
+		for (int j = 0; j < kk; j++) cout << mm[i][j] << "\t";
+		cout << "\n";
 	}
-}
-void endcord(int** mm, int k, int kk, int y, int& iend, int& jend)
-{
-	bool vso = false;
-	for (int i = 0; i < k; i++)
-	{
-		for (int j = 0; j < kk; j++)
-		{
-			if (mm[i][j] - 1 == y)
-			{
-				iend = i;
-				jend = j;
-				vso = true;
-			}
-		}
-		if (vso == true) break;
-	}
-}
-void routeout(Route* route, Vert* vert, int ss, int a, int v, int& iii)
-{
-	int kk = v + 1;
-	route[0].r = kk;
-	while (kk != a + 1 && kk>0)
-	{
-		iii++;
-		kk = vert[kk - 1].qq;
-		route[iii].r = kk;
-	}
-	if (kk != 0)
-	{
-		cout << "\n Our route: " << route[iii].r;
-		for (int i = iii - 1; i >= 0; i--) cout << "->" << route[i].r;
-	}
-	else cout << "\n [!] No way from first vertex to finish";
-}
-int nextv(Vert* vert, int ss)
-{
-	for (int i = 0; i < ss; i++) if (INT_MAX != vert[vert[i].pri].d && vert[vert[i].pri].ll == false) { return vert[i].pri; }
-	return -1;
-}
-void makems(int** mm, int k, int kk, int** ms)
-{
-	for (int i = 0; i < k; i++)
-	{
-		for (int j = 0; j < kk; j++)
-		{
-			if (mm[i][j] >= 1)
-			{
-				if (j + 1 < kk && i + 1 < k) if (mm[i + 1][j + 1] >= 1) { ms[mm[i + 1][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j + 1] - 1] = 1; }
-				if (j - 1 >= 0 && i - 1 >= 0) if (mm[i - 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j - 1] - 1] = 1; ms[mm[i - 1][j - 1] - 1][mm[i][j] - 1] = 1; }
-				if (j - 1 >= 0 && i + 1 < k) if (mm[i + 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i + 1][j - 1] - 1] = 1; ms[mm[i + 1][j - 1] - 1][mm[i][j] - 1] = 1; }
-				if (i - 1 >= 0 && j + 1 < kk) if (mm[i - 1][j + 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j + 1] - 1] = 1; ms[mm[i - 1][j + 1] - 1][mm[i][j] - 1] = 1; }
-
-				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i - 1][j] - 1] = 1; }
-				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i][j - 1] - 1] = 1; }
-				if (i + 1 < k) if (mm[i + 1][j] >= 1) { ms[mm[i + 1][j] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j] - 1] = 1; }
-				if (j + 1 < kk) if (mm[i][j + 1] >= 1) { ms[mm[i][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i][j + 1] - 1] = 1; }
-			}
-		}
-	}
+	cout << " -\n";
 }
 char symb(int N)
 {
@@ -224,33 +293,7 @@ char symb(int N)
 	else if (N + 87 <= 122) return N + 87;
 	else if (N + 29 <= 87) return N + 29; //для - 'X'
 	else if (N + 30 <= 90) return N + 30;
-	return '?';
+	return '+';
 }
-void lout(int** mm, int k, int kk, Route* route, int iii)
-{
-	ofstream fout;
-	fout.open("output.txt");
-	int h;
-	cout << "\n";
-	for (int i = 0; i < k; i++)
-	{
-		cout << "\n | ";
-		for (int j = 0; j < kk; j++)
-		{
-			h = -1;
-			for (int hh = 0; hh <= iii; hh++)
-			{
 
-				if (mm[i][j] == route[hh].r) { h = iii - hh; break; }
-			}
-			if (h != -1) { cout << symb(h) << " ";	fout << symb(h) << " "; }
-			else
-			{
-				if (mm[i][j] == 0) { cout << "X ";	fout << "X "; }
-				else { cout << "  ";  fout << "  "; }
-			}
-		}
-		fout << endl;
-		cout << "|";
-	}
-}
+
