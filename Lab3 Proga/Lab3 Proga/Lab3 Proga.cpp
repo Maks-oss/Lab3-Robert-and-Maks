@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 struct Vert
 {
 	bool ll; //відвідана?
@@ -201,10 +200,10 @@ void makems(int** mm, int k, int kk, int** ms)
 		{
 			if (mm[i][j] >= 1)
 			{
-				//if (j + 1 < kk && i + 1 < k) if (mm[i + 1][j + 1] >= 1) { ms[mm[i + 1][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j + 1] - 1] = 1; }
-				//if (j - 1 >= 0 && i - 1 >= 0) if (mm[i - 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j - 1] - 1] = 1; ms[mm[i - 1][j - 1] - 1][mm[i][j] - 1] = 1; }
-				//if (j - 1 >= 0 && i + 1 < k) if (mm[i + 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i + 1][j - 1] - 1] = 1; ms[mm[i + 1][j - 1] - 1][mm[i][j] - 1] = 1; }
-				//if (i - 1 >= 0 && j + 1 < kk) if (mm[i - 1][j + 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j + 1] - 1] = 1; ms[mm[i - 1][j + 1] - 1][mm[i][j] - 1] = 1; }
+				if (j + 1 < kk && i + 1 < k) if (mm[i + 1][j + 1] >= 1) { ms[mm[i + 1][j + 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i + 1][j + 1] - 1] = 1; }
+				if (j - 1 >= 0 && i - 1 >= 0) if (mm[i - 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j - 1] - 1] = 1; ms[mm[i - 1][j - 1] - 1][mm[i][j] - 1] = 1; }
+				if (j - 1 >= 0 && i + 1 < k) if (mm[i + 1][j - 1] >= 1) { ms[mm[i][j] - 1][mm[i + 1][j - 1] - 1] = 1; ms[mm[i + 1][j - 1] - 1][mm[i][j] - 1] = 1; }
+				if (i - 1 >= 0 && j + 1 < kk) if (mm[i - 1][j + 1] >= 1) { ms[mm[i][j] - 1][mm[i - 1][j + 1] - 1] = 1; ms[mm[i - 1][j + 1] - 1][mm[i][j] - 1] = 1; }
 
 				if (i - 1 >= 0) if (mm[i - 1][j] >= 1) { ms[mm[i - 1][j] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i - 1][j] - 1] = 1; }
 				if (j - 1 >= 0) if (mm[i][j - 1] >= 1) { ms[mm[i][j - 1] - 1][mm[i][j] - 1] = 1; ms[mm[i][j] - 1][mm[i][j - 1] - 1] = 1; }
