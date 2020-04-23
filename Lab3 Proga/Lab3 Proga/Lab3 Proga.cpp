@@ -1,7 +1,7 @@
 ﻿#include <fstream>
 #include <iostream>
 #include <string>
-//#include<algorithm>
+#include<algorithm>
 #include <vector>
 
 using namespace std;
@@ -16,12 +16,11 @@ struct Vertex
 void sol(Vertex* mVert, int** mm, int k, int kk);
 char symb(int N);
 void lout(int** mm, int k, int kk);
-void reconstructpath(int* prev, vector<int>& c, int x, int y);
+int reconstructpath(int* prev, vector<int>& c, int x, int y);
 int h(int x, int y, int** mm, int k, int kk);
 void file_out(vector<int>& c, int** mm, int k, int kk);
 void A_star(Vertex* node, int k, int kk, int** mm, int* prev, int ss, int x, int y);
 
-int curr;
 
 class Queue
 {
@@ -117,14 +116,15 @@ int main()
 	for (int i = 0; i < ss; i++) prev[i] = 0;
 	vector<int>c;
 	A_star(mVert, k, kk, mm, prev, ss, Sv, Ev);
-	reconstructpath(prev, c, Sv, Ev);
-	file_out(c, mm, k, kk);
+	int current=reconstructpath(prev, c, Sv, Ev);
+	if (current == 0) { cout << "No Path: "; }
+	else{ file_out(c, mm, k, kk); }
 	///
 }
 
-void reconstructpath(int* prev, vector<int>& c, int x, int y)
+int reconstructpath(int* prev, vector<int>& c, int x, int y)
 {
-	curr = y;
+	int curr = y;
 
 	c.push_back(curr);
 	while (curr != x && curr > 0)
@@ -134,6 +134,7 @@ void reconstructpath(int* prev, vector<int>& c, int x, int y)
 	}
 	c.push_back(x);
 	reverse(c.begin(), c.end());
+	return curr;
 }
 int h(int x, int y, int** mm, int k, int kk)
 {
@@ -154,11 +155,10 @@ int h(int x, int y, int** mm, int k, int kk)
 	}
 	int dx = abs(x1 - y1);
 	int dy = abs(x2 - y2);
-	//return 4 * (dx + dy) + (4 - 2 * 8) * min(dx, dy);
+	return 4 * (dx + dy) + (4 - 2 * 8) * min(dx, dy);
 	//return sqrt(dx * dx + dy * dy);
 	//return(dx * dx + dy * dy);
-	return (dx + dy);
-	//return 1;
+	//return (dx + dy);
 }
 void A_star(Vertex* node, int k, int kk, int** mm, int* prev, int ss, int x, int y)
 {
@@ -175,14 +175,17 @@ void A_star(Vertex* node, int k, int kk, int** mm, int* prev, int ss, int x, int
 	{
 		int current = Q.getmin();
 		used[current] = true;
-		if (current == y) break;////
+		if (current == y) { break; }////
 		Q.pop();
 		for (int i = 0; i < node[current - 1].ksos; i++)
-		{
-			if (g[node[current - 1].sosedi[i]] > g[current] + (node[current - 1].i == node[node[current - 1].sosedi[i] - 1].i || node[current - 1].j == node[node[current - 1].sosedi[i] - 1].j ? 10000000 : 14142135))
+		{	
+			if (g[node[current - 1].sosedi[i]] > g[current] + 1)
+			//With diagonal movement only
+			//if (g[node[current - 1].sosedi[i]] > g[current] + (node[current - 1].i == node[node[current - 1].sosedi[i] - 1].i || node[current - 1].j == node[node[current - 1].sosedi[i] - 1].j ? 10000000 : 14142135))
 			{
 				//cout << (node[current - 1].i == node[node[current - 1].sosedi[i] - 1].i || node[current - 1].j == node[node[current - 1].sosedi[i] - 1].j ? 10000000 : 14142135) << " " << node[current-1].i << " " << node[current-1].j << " " << node[node[current-1].sosedi[i]-1].i << " " << node[node[current-1].sosedi[i]-1].j << "\n";
-				g[node[current - 1].sosedi[i]] = g[current] + (node[current - 1].i == node[node[current - 1].sosedi[i] - 1].i || node[current - 1].j == node[node[current - 1].sosedi[i] - 1].j ? 10000000 : 14142135);
+				//g[node[current - 1].sosedi[i]] = g[current] + (node[current - 1].i == node[node[current - 1].sosedi[i] - 1].i || node[current - 1].j == node[node[current - 1].sosedi[i] - 1].j ? 10000000 : 14142135);
+				g[node[current - 1].sosedi[i]] = g[current] + 1;
 				prev[node[current - 1].sosedi[i]] = current;
 				f[node[current - 1].sosedi[i]] = g[node[current - 1].sosedi[i]] + h(node[current - 1].sosedi[i], y, mm, k, kk);
 				if (!used[node[current - 1].sosedi[i]])
@@ -198,9 +201,7 @@ void file_out(vector<int>& c, int** mm, int k, int kk)
 	ofstream fout;
 	fout.open("d:\\output.txt");
 	bool is;
-	if (curr == 0) { cout << "No Path"; }
-	else
-	{
+	
 		for (int i = 0; i < k; i++)
 		{
 			cout << "\n | ";
@@ -226,7 +227,7 @@ void file_out(vector<int>& c, int** mm, int k, int kk)
 			fout << endl;
 			cout << "|";
 		}
-	}
+	
 }
 void sol(Vertex* mVert, int** mm, int k, int kk)
 {
